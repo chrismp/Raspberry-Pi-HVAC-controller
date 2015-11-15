@@ -36,7 +36,9 @@ try:
 			(unixTimeNow,temp)
 		)
 		conn.commit()
-		time.sleep(1)
+
+		secondsBetweenReadings = 5 # external variable
+		time.sleep(secondsBetweenReadings)
 except KeyboardInterrupt:
 	conn.close()
 	print('Interrupted!')
