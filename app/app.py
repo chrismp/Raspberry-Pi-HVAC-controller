@@ -2,6 +2,7 @@ from flask import Flask, render_template, flash, redirect, jsonify, request
 from collections import namedtuple
 # from app import app
 import datetime
+import time
 import db
 
 app = Flask(__name__, static_url_path='')
@@ -77,7 +78,7 @@ def update():
 	return jsonify(desiredStatus)
 
 @app.route('/status', methods=['GET','POST'])
-def switchState():
+def status():
 	# Sets new desired state based on uer input and return current state of HVAC and fan
 	if request.method == 'POST':
 		desiredStatus = statify(request.json)

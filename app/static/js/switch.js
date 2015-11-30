@@ -3,11 +3,13 @@ $(document).ready(function(){
 	var $roomTemperature = $('#room-temperature');
 	var $hvacStatus = $('#hvac-status');
 	var $fanStatus = $('#fan-status');
-	var $hvacRadioButtonArray = $('input:radio[name=hvac]');
-	var $fanRadioButtonArray = $('input:radio[name=fan]');
+	var $hvacRadioInputArray = $('input:radio[name=hvac]');
+	var $fanRadioInputArray = $('input:radio[name=fan]');
 
 	// $(document).ajaxStart(function(){
+	// 	do something to show AJAX request is processing
 	// }).ajaxStop(function(){
+	// 	do something once AJAX request stops
 	// });
 
 	$.get('/status',function(data){
@@ -18,11 +20,34 @@ $(document).ready(function(){
 		var cool = data.cool;
 		var heat = data.heat;
 
+		$clock.html(new Date(Date.now()));
 		$roomTemperature.html(roomTemperature);
 		$hvacStatus.html(hvacStatus);
 		$fanStatus.html(fanStatus);
 
-		setRadioInputOnLoad($hvacRadioButtonArray, hvacStatus)
-		setRadioInputOnLoad($fanRadioButtonArray, fanStatus)
+		setRadioInputOnLoad($hvacRadioInputArray, hvacStatus)
+		setRadioInputOnLoad($fanRadioInputArray, fanStatus)
 	});
+
+	$hvacRadioInputArray.click(function(){
+		var hvacMode, fanMode, cool, heat;
+		var $radioInput = $(this);
+		console.log($radioInput.attr('name'));
+
+		// `val` attribute of `input` user clicked.
+		// For HVAC: 0 is off, 1 is cool, 2 is heat
+		// For fan: 0 is off, 1 is on
+		var settingVal = $radioInput.val();
+
+
+		var dataToSend = {
+			'hvacMode': 
+		};
+
+		// $.ajax({
+		// 	url: '/status',
+		// 	type: 'POST',
+		// 	data
+		// });
+	})
 });
