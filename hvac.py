@@ -97,5 +97,6 @@ if __name__=='__main__':
 			preConnect = datetime.datetime.now()
 			sendCurrentStatus()
 			lastConnect = datetime.datetime.now()
+			time.sleep(5)
 	except Exception as e:
 		print(e)

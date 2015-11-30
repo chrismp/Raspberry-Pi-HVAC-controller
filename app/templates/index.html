@@ -1,4 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
-	{{ latestStatus }}
+	<h1>HVAC and fan remote</h1>
+	<div>
+		<p id="clock">
+			{{ timeNow.strftime('Time is %H:%M:%S on %A, %Y-%m-%d.') }}
+		</p>
+		<p>
+			Room temperature: <mark><span id="room-temperature"></span></mark>F.
+		</p>
+		<p>
+			HVAC: <mark><span id="hvac-status"></span></mark>
+		</p>
+		<p>
+			Fan : <mark><span id="fan-status"></span></mark>
+		</p>
+	</div>
+
+	<div>
+		HVAC
+		<input type="radio" name="hvac" value="0">Off
+		<input type="radio" name="hvac" value="1">Cool
+		<input type="radio" name="hvac" value="2">Heat
+	</div>
+
+	<div>
+		Fan
+		<input type="radio" name="fan" value="0">Off
+		<input type="radio" name="fan" value="1">On
+	</div>
+
+	{{ timeLastRead }}
+	{{ hvacStatus }}
+	{{ fanStatus }}
+	{{ roomTemperature }}
+	{{ cool }}
+	{{ heat }}
 {% endblock %}
