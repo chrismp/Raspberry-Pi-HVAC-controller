@@ -24,7 +24,7 @@ def sendCurrentStatus():
 		'heatTemperature': currentStatus['heatTemperature'],
 		'fanSwitch': currentStatus['fanSwitch']
 	}
-	print(dataToSend)
+	# print(dataToSend)
 
 	url = 'http://localhost:5000/add-hvac-status'
 	headers = {

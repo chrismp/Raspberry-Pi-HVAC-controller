@@ -32,19 +32,7 @@ AcStatus = namedtuple(
 @app.route('/', methods=['GET','POST'])
 @app.route('/index', methods=['GET','POST'])
 def homepage():
-	latestStatus = db.getLastStatus()
-
-	return render_template(
-		'index.html',
-		timeNow = datetime.datetime.now(),
-		timeLastRead = latestStatus[1],
-		roomTemperature = latestStatus[2],
-		coolSwitch = latestStatus[3],
-		coolTemperature = latestStatus[4],
-		heatSwitch = latestStatus[5],
-		heatTemperature = latestStatus[6],
-		fanSwitch = latestStatus[7]
-	)
+	return render_template('index.html')
 
 # Receive information from the Raspberry Pi about the air conditioner's state and add to the database. 
 # Respond to the Pi with the current desired state as set by the user.
@@ -96,6 +84,8 @@ def status():
 		currentLog[7]
 	)
 
+	latestStatus = db.getLastStatus()
+
 	return jsonify(
 		timeLastRead = latestStatus[1],
 		roomTemperature = latestStatus[2],
@@ -106,58 +96,58 @@ def status():
 		fanSwitch = latestStatus[7]
 	)
 
-def statify(uiStatus):
-	allowedStatesHVAC = {
-		'OFF': {
-			'status': 0
-		},
-		'COOL': {
-			'status': 1,
-			'temperature': uiStatus['cool']
-		},
-		'HEAT': {
-			'status': 2,
-			'temperature': uiStatus['heat']
-		}
-	}
+# def statify(uiStatus):
+# 	allowedStatesHVAC = {
+# 		'OFF': {
+# 			'status': 0
+# 		},
+# 		'COOL': {
+# 			'status': 1,
+# 			'temperature': uiStatus['cool']
+# 		},
+# 		'HEAT': {
+# 			'status': 2,
+# 			'temperature': uiStatus['heat']
+# 		}
+# 	}
 
-	allowedStatesFan = {
-		'OFF': {
-			'status': 0
-		},
-		'ON': {
-			'status': 1
-		}
-	}
+# 	allowedStatesFan = {
+# 		'OFF': {
+# 			'status': 0
+# 		},
+# 		'ON': {
+# 			'status': 1
+# 		}
+# 	}
 
-	cleanedStateHVAC = {}
-	cleanedStateFan = {}
+# 	cleanedStateHVAC = {}
+# 	cleanedStateFan = {}
 
-	if uiStatus['hvacMode'] == 0:
-		cleanedStateHVAC = allowedStatesHVAC['OFF']
-	elif uiStatus['hvacMode'] == 1:
-		cleanedStateHVAC = allowedStatesHVAC['COOL']
-	elif uiStatus['hvacMode'] == 2:
-		cleanedStateHVAC = allowedStatesHVAC['HEAT']
-	else:
-		print('Invalid `hvacMode`')
-		pass
+# 	if uiStatus['hvacMode'] == 0:
+# 		cleanedStateHVAC = allowedStatesHVAC['OFF']
+# 	elif uiStatus['hvacMode'] == 1:
+# 		cleanedStateHVAC = allowedStatesHVAC['COOL']
+# 	elif uiStatus['hvacMode'] == 2:
+# 		cleanedStateHVAC = allowedStatesHVAC['HEAT']
+# 	else:
+# 		print('Invalid `hvacMode`')
+# 		pass
 
-	if uiStatus['fanMode'] == 0:
-		cleanedStateFan = allowedStatesFan['OFF']
-	elif uiStatus['fanMode'] == 1:
-		cleanedStateFan = allowedStatesFan['ON']
-	else:
-		print('Invalid `fanMode`')
-		pass
+# 	if uiStatus['fanMode'] == 0:
+# 		cleanedStateFan = allowedStatesFan['OFF']
+# 	elif uiStatus['fanMode'] == 1:
+# 		cleanedStateFan = allowedStatesFan['ON']
+# 	else:
+# 		print('Invalid `fanMode`')
+# 		pass
 
 
-	cleanedState = {
-		'HVAC': cleanedStateHVAC,
-		'Fan': cleanedStateFan
-	}
+# 	cleanedState = {
+# 		'HVAC': cleanedStateHVAC,
+# 		'Fan': cleanedStateFan
+# 	}
 
-	return cleanedState
+# 	return cleanedState
 
 
 if __name__=='__main__':

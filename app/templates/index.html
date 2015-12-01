@@ -2,9 +2,7 @@
 {% block content %}
 	<!-- <h1>HVAC and fan remote</h1> -->
 	<div>
-		<p id="clock">
-			<!-- {{ timeNow.strftime('Time is %H:%M:%S on %A, %Y-%m-%d.') }} -->
-		</p>
+		<p id="clock"></p>
 		<p>
 			Room temperature: <mark><span id="room-temperature"></span></mark>F.
 		</p>
@@ -17,13 +15,6 @@
 	</div>
 
 	<div>
-		Heat
-		<input type="number" name="heat-temperature" min="65" max="80" placeholder="65-80F">
-		<input type="radio" name="heat-switch" value="0">Off
-		<input type="radio" name="heat-switch" value="1">On
-	</div>
-
-	<div>
 		Cool
 		<input type="number" name="cool-temperature" min="65" max="80" placeholder="65-80F">
 		<input type="radio" name="cool-switch" value="0">Off
@@ -31,15 +22,15 @@
 	</div>
 
 	<div>
-		Fan
-		<input type="radio" name="fan" value="0">Off
-		<input type="radio" name="fan" value="1">On
+		Heat
+		<input type="number" name="heat-temperature" min="65" max="80" placeholder="65-80F">
+		<input type="radio" name="heat-switch" value="0">Off
+		<input type="radio" name="heat-switch" value="1">On
 	</div>
 
-	{{ timeLastRead }}
-	{{ hvacStatus }}
-	{{ fanStatus }}
-	{{ roomTemperature }}
-	{{ cool }}
-	{{ heat }}
+	<div>
+		Fan
+		<input type="radio" name="fan-switch" value="0">Off
+		<input type="radio" name="fan-switch" value="1">On
+	</div>
 {% endblock %}

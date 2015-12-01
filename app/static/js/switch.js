@@ -1,10 +1,11 @@
 $(function(){
 	var $clock = $('#clock');
 	var $roomTemperature = $('#room-temperature');
-	var $hvacStatus = $('#hvac-status');
-	var $fanStatus = $('#fan-status');
-	var $hvacRadioInputArray = $('input:radio[name=hvac]');
-	var $fanRadioInputArray = $('input:radio[name=fan]');
+	var $coolTemperature = $('input:radio[name=cool-temperature]');
+	var $coolSwitchRadioArray = $('input:radio[name=cool-switch]');
+	var $heatTemperature = $('input:radio[name=heat-temperature]');
+	var $heatSwitchRadioArray = $('input:radio[name=heat-switch]');
+	var $fanSwitchRadioArray = $('input:radio[name=fan-switch]');
 
 	// $(document).ajaxStart(function(){
 	// 	do something to show AJAX request is processing
@@ -13,20 +14,20 @@ $(function(){
 	// });
 
 	$.get('/status',function(data){
-		var unixTime = data.unixTime;
-		var hvacStatus = data.hvacStatus;
-		var fanStatus = data.fanStatus;
+		var timeLastRead = data.timeLastRead;
 		var roomTemperature = data.roomTemperature;
-		var cool = data.cool;
-		var heat = data.heat;
+		var coolSwitch = data.coolSwitch;
+		var coolTemperature = data.coolTemperature;
+		var heatSwitch = data.heatSwitch;
+		var heatTemperature = data.heatTemperature;
+		var fanSwitch = data.fanSwitch;
 
 		$clock.html(new Date(Date.now()));
 		$roomTemperature.html(roomTemperature);
-		$hvacStatus.html(hvacStatus);
-		$fanStatus.html(fanStatus);
 
-		setRadioInputOnLoad($hvacRadioInputArray, hvacStatus)
-		setRadioInputOnLoad($fanRadioInputArray, fanStatus)
+		setRadioInputOnLoad($coolSwitchRadioArray, coolSwitch)
+		setRadioInputOnLoad($heatSwitchRadioArray, heatSwitch)
+		setRadioInputOnLoad($fanSwitchRadioArray, fanSwitch)
 	});
 
 	var arrayOfRadioInputArrays = [
