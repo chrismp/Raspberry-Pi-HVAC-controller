@@ -7,31 +7,25 @@ import db
 
 app = Flask(__name__, static_url_path='')
 
-# currentStatus = {
-# 	'unixTime'
-# 	'hvac': 0,
-# 	'fan': 0,
-# 	'roomTemperature': None,
-# 	'cool': None,
-# 	'heat': None
-# }
 
 desiredStatus = {
-	'hvac': 0,
-	'fan': 0,
-	'cool': None,
-	'heat': None
+	'coolSwitch': 0,
+	'coolTemperature': None,
+	'heatSwitch': 0,
+	'heatTemperature': None,
+	'fanSwitch': 0
 }
 
 AcStatus = namedtuple(
 	'AcStatus',
 	[
 		'unixTime',
-		'hvacStatus',
-		'fanStatus',
 		'roomTemperature',
-		'cool',
-		'heat'
+		'coolSwitch',
+		'coolTemperature',
+		'heatSwitch',
+		'heatTemperature',
+		'fanSwitch'
 	]
 )
 
@@ -40,16 +34,16 @@ AcStatus = namedtuple(
 def homepage():
 	latestStatus = db.getLastStatus()
 
-
 	return render_template(
 		'index.html',
 		timeNow = datetime.datetime.now(),
 		timeLastRead = latestStatus[1],
-		hvacStatus = latestStatus[2],
-		fanStatus = latestStatus[3],
-		roomTemperature = latestStatus[4],
-		cool = latestStatus[5],
-		heat = latestStatus[6]
+		roomTemperature = latestStatus[2],
+		coolSwitch = latestStatus[3],
+		coolTemperature = latestStatus[4],
+		heatSwitch = latestStatus[5],
+		heatTemperature = latestStatus[6],
+		fanSwitch = latestStatus[7]
 	)
 
 # Receive information from the Raspberry Pi about the air conditioner's state and add to the database. 
@@ -57,21 +51,23 @@ def homepage():
 @app.route('/add-hvac-status', methods=['POST'])
 def update():
 	response = request.json
-	hvacStatus = response['hvacStatus']
-	fanStatus = response['fanStatus']
 	roomTemperature = response['roomTemperature']
-	cool = response['cool']
-	heat = response['heat']
+	coolSwitch = response['coolSwitch']
+	coolTemperature = response['coolTemperature']
+	heatSwitch = response['heatSwitch']
+	heatTemperature = response['heatTemperature']
+	fanSwitch = response['fanSwitch']
 
 	# add current status received from Pi to database
 	db.addStatus(
 		AcStatus(
 			time.time(),
-			hvacStatus,
-			fanStatus,
 			roomTemperature,
-			cool,
-			heat
+			coolSwitch,
+			coolTemperature,
+			heatSwitch,
+			heatTemperature,
+			fanSwitch
 		)
 	)
 
@@ -82,13 +78,12 @@ def status():
 	# Sets new desired state based on uer input and return current state of HVAC and fan
 	if request.method == 'POST':
 		desiredStatus = statify(request.json)
-		print(desiredStatus)
-		# desiredStatusTup = (
-		# 	desiredStatus['HVAC']['status'],
-		# 	desiredStatus['Fan']['status'],
-		# 	desiredStatus['HVAC']['cool'],
-		# 	desiredStatus['HVAC']['heat']
-		# )
+		desiredStatusTup = (
+			desiredStatus['HVAC']['status'],
+			desiredStatus['Fan']['status'],
+			desiredStatus['HVAC']['cool'],
+			desiredStatus['HVAC']['heat']
+		)
 
 	currentLog = db.getLastStatus()
 	currentStatus = (
@@ -97,16 +92,18 @@ def status():
 		currentLog[3],
 		currentLog[4],
 		currentLog[5],
-		currentLog[6]
+		currentLog[6],
+		currentLog[7]
 	)
 
 	return jsonify(
-		unixTime = currentStatus[0],
-		hvacStatus = currentStatus[1],
-		fanStatus = currentStatus[2],
-		roomTemperature = currentStatus[3],
-		cool = currentStatus[4],
-		heat = currentStatus[5]
+		timeLastRead = latestStatus[1],
+		roomTemperature = latestStatus[2],
+		coolSwitch = latestStatus[3],
+		coolTemperature = latestStatus[4],
+		heatSwitch = latestStatus[5],
+		heatTemperature = latestStatus[6],
+		fanSwitch = latestStatus[7]
 	)
 
 def statify(uiStatus):

@@ -15,20 +15,17 @@ def currentTemperatureRaw():
 def currentTemperatureRound(temperatureRaw):
 	return int(round(temperatureRaw))
 
-def isRunning():
-	return True if random.randint(0, 1)==1 else False
-
 def sendCurrentStatus():
 	dataToSend = {
-		# 'isRunning': isRunning(),
 		'roomTemperature': currentTemperatureRound(currentTemperatureRaw()),
-		'hvacStatus': desiredState['hvac'],
-		'fanStatus': desiredState['fan'],
-		'cool': desiredState['cool'],
-		'heat': desiredState['heat']
+		'coolSwitch': currentStatus['coolSwitch'],
+		'coolTemperature': currentStatus['coolTemperature'],
+		'heatSwitch': currentStatus['heatSwitch'],
+		'heatTemperature': currentStatus['heatTemperature'],
+		'fanSwitch': currentStatus['fanSwitch']
 	}
 	print(dataToSend)
-	
+
 	url = 'http://localhost:5000/add-hvac-status'
 	headers = {
 		'Content-type': 'application/json',
@@ -42,54 +39,51 @@ def sendCurrentStatus():
 		timeout = 5
 	)
 
-	hvacStatus = r.json()['hvac']
-	fanStatus = r.json()['fan']
-	cool = r.json()['cool']
-	heat = r.json()['heat']
+	rJSON = r.json()
 
-	print(hvacStatus, fanStatus, cool, heat)
-	setStatus(hvacStatus, fanStatus, cool, heat)
+	coolSwitch = rJSON['coolSwitch']
+	coolTemperature = rJSON['coolTemperature']
+	heatSwitch = rJSON['heatSwitch']
+	heatTemperature = rJSON['heatTemperature']
+	fanSwitch = rJSON['fanSwitch']
 
-def setStatus(hvacStatus, fanStatus, cool, heat):
-	roomTemperature = currentTemperatureRaw()
+	print('======')
+	setStatus(dataToSend['roomTemperature'], coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
 
-	if hvacStatus==1:
-		hvac = 1
-		coolSet = cool
-		heatSet = None
-	elif hvacStatus==2:
-		hvac = 2
-		coolSet = None
-		heatSet = heat
-	else:
-		hvac = 0
-		coolSet = None
-		heatSet = None
+def setStatus(roomTemperature, coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
+	# if coolSwitch==0:
+	# 	# Set cool GPIO pin to HIGH
+	# elif coolSwitch==1:
+	# 	# Set to LOW
 
-	if fanStatus==1:
-		fan = 1
-	else:
-		fan = 0
+	# if heatSwitch==0:
+	# 	# More code
+	# elif heatSwitch==1:
+	# 	# Even more code
 
-	currentState['hvac'] = hvac
-	currentState['fan'] = fan
-	currentState['cool'] = coolSet
-	currentState['heat'] = heatSet
+	# if fanSwitch==0:
+	# 	# Switch fan off or keep it off if it's already off
+	# elif fanSwitch==1:
+	# 	# Turn fan on or keep it on if already on
+
+	currentStatus['roomTemperature'] = roomTemperature
+	currentStatus['coolSwitch'] = coolSwitch
+	currentStatus['coolTemperature'] = coolTemperature
+	currentStatus['heatSwitch'] = heatSwitch
+	currentStatus['heatTemperature'] = heatTemperature
+	currentStatus['fanSwitch'] = fanSwitch
+
+	# print(currentStatus)
 
 
 if __name__=='__main__':
-	currentState = {
-		'hvac': 0,
-		'fan': 0,
-		'cool': None,
-		'heat': None
-	}
-
-	desiredState = {
-		'hvac': 0,
-		'fan': 0,
-		'cool': None,
-		'heat': None
+	# Initialize variables
+	currentStatus = {
+		'coolSwitch': 0,
+		'coolTemperature': None,
+		'heatSwitch': 0,
+		'heatTemperature': None,
+		'fanSwitch': 0
 	}
 
 	try:
@@ -99,4 +93,4 @@ if __name__=='__main__':
 			lastConnect = datetime.datetime.now()
 			time.sleep(5)
 	except Exception as e:
-		print(e)
+		raise

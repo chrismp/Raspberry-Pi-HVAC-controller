@@ -8,11 +8,12 @@ def makeDB():
 			CREATE TABLE IF NOT EXISTS statuses(
 				row integer primary key autoincrement,
 				unixTime float,
-				hvacStatus integer,
-				fanStatus integer,
 				roomTemperature float,
-				cool integer,
-				heat integer
+				coolSwitch boolean,
+				coolTemperature integer,
+				heatSwitch boolean,
+				heatTemperature integer,
+				fanSwitch boolean
 			)
 		'''
 	)
@@ -24,13 +25,15 @@ def addStatus(status):
 		'''
 			INSERT INTO statuses(
 				unixTime,
-				hvacStatus,
-				fanStatus,
 				roomTemperature,
-				cool,
-				heat
+				coolSwitch,
+				coolTemperature,
+				heatSwitch,
+				heatTemperature,
+				fanSwitch
 			)
 			VALUES (
+				?,
 				?,
 				?,
 				?,
