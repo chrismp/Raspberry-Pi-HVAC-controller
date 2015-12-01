@@ -82,12 +82,13 @@ def status():
 	# Sets new desired state based on uer input and return current state of HVAC and fan
 	if request.method == 'POST':
 		desiredStatus = statify(request.json)
-		desiredStatusTup = (
-			desiredStatus['HVAC']['status'],
-			desiredStatus['Fan']['status'],
-			desiredStatus['HVAC']['cool'],
-			desiredStatus['HVAC']['heat']
-		)
+		print(desiredStatus)
+		# desiredStatusTup = (
+		# 	desiredStatus['HVAC']['status'],
+		# 	desiredStatus['Fan']['status'],
+		# 	desiredStatus['HVAC']['cool'],
+		# 	desiredStatus['HVAC']['heat']
+		# )
 
 	currentLog = db.getLastStatus()
 	currentStatus = (
@@ -111,19 +112,15 @@ def status():
 def statify(uiStatus):
 	allowedStatesHVAC = {
 		'OFF': {
-			'status': 0,
-			'cool': '',
-			'heat': ''
+			'status': 0
 		},
 		'COOL': {
 			'status': 1,
-			'cool': str(uiStatus['cool']),
-			'heat': ''
+			'temperature': uiStatus['cool']
 		},
 		'HEAT': {
 			'status': 2,
-			'cool': '',
-			'heat': str(uiStatus['heat'])
+			'temperature': uiStatus['heat']
 		}
 	}
 

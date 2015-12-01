@@ -7,3 +7,12 @@ function setRadioInputOnLoad(arrayOfElements, statusReceivedFromServer){
 		}
 	}	
 }
+
+function getOtherDeviceSetting(arrayOfElements){
+	for(var i = 0; i < arrayOfElements.length; i++) {
+		var elem = $(arrayOfElements[i]);
+		if(elem.prop('checked',true)){
+			return +elem.val();
+		}
+	}
+}
