@@ -7,7 +7,6 @@ import db
 
 app = Flask(__name__, static_url_path='')
 
-
 desiredStatus = {
 	'coolSwitch': 0,
 	'coolTemperature': None,
@@ -63,91 +62,64 @@ def update():
 
 @app.route('/status', methods=['GET','POST'])
 def status():
-	# Sets new desired state based on uer input and return current state of HVAC and fan
+	currentLog = db.getLastStatus()
+
+	# Sets new desired state based on user input.
+	# Return current state of HVAC and fan
 	if request.method == 'POST':
-		desiredStatus = statify(request.json)
-		desiredStatusTup = (
-			desiredStatus['HVAC']['status'],
-			desiredStatus['Fan']['status'],
-			desiredStatus['HVAC']['cool'],
-			desiredStatus['HVAC']['heat']
+		response = request.json
+
+		# `response` won't have all the keys `desiredStatus` has.
+		# So go thru each key in `desiredStatus`.
+		# If a `desiredStatus` key matches a `response` key...
+		# ... change that `desiredStatus` key's value... 
+		# ...to that of the `response` key's value.
+		# If not, still add the key to `desiredStatus`...
+		# ...but give it the value from the latest reading in the data table
+		for key in desiredStatus:
+			if(key in response):
+				desiredStatus[key] = response[key]
+			else:
+				desiredStatus[key] = currentLog[key]
+
+
+		db.addStatus(
+			AcStatus(
+				time.time(),
+				currentLog['roomTemperature'],
+				desiredStatus['coolSwitch'],
+				desiredStatus['coolTemperature'],
+				desiredStatus['heatSwitch'],
+				desiredStatus['heatTemperature'],
+				desiredStatus['fanSwitch']
+			)
 		)
 
-	currentLog = db.getLastStatus()
-	currentStatus = (
-		currentLog[1],
-		currentLog[2],
-		currentLog[3],
-		currentLog[4],
-		currentLog[5],
-		currentLog[6],
-		currentLog[7]
-	)
 
-	latestStatus = db.getLastStatus()
+	print(currentLog)
+	
+	# do i need this...?
+	# currentStatus = (
+	# 	currentLog[1],
+	# 	currentLog[2],
+	# 	currentLog[3],
+	# 	currentLog[4],
+	# 	currentLog[5],
+	# 	currentLog[6],
+	# 	currentLog[7]
+	# )
+
+	# latestStatus = db.getLastStatus()
 
 	return jsonify(
-		timeLastRead = latestStatus[1],
-		roomTemperature = latestStatus[2],
-		coolSwitch = latestStatus[3],
-		coolTemperature = latestStatus[4],
-		heatSwitch = latestStatus[5],
-		heatTemperature = latestStatus[6],
-		fanSwitch = latestStatus[7]
+		timeLastRead = currentLog['unixTime'],
+		roomTemperature = currentLog['roomTemperature'],
+		coolSwitch = currentLog['coolSwitch'],
+		coolTemperature = currentLog['coolTemperature'],
+		heatSwitch = currentLog['heatSwitch'],
+		heatTemperature = currentLog['heatTemperature'],
+		fanSwitch = currentLog['fanSwitch']
 	)
-
-# def statify(uiStatus):
-# 	allowedStatesHVAC = {
-# 		'OFF': {
-# 			'status': 0
-# 		},
-# 		'COOL': {
-# 			'status': 1,
-# 			'temperature': uiStatus['cool']
-# 		},
-# 		'HEAT': {
-# 			'status': 2,
-# 			'temperature': uiStatus['heat']
-# 		}
-# 	}
-
-# 	allowedStatesFan = {
-# 		'OFF': {
-# 			'status': 0
-# 		},
-# 		'ON': {
-# 			'status': 1
-# 		}
-# 	}
-
-# 	cleanedStateHVAC = {}
-# 	cleanedStateFan = {}
-
-# 	if uiStatus['hvacMode'] == 0:
-# 		cleanedStateHVAC = allowedStatesHVAC['OFF']
-# 	elif uiStatus['hvacMode'] == 1:
-# 		cleanedStateHVAC = allowedStatesHVAC['COOL']
-# 	elif uiStatus['hvacMode'] == 2:
-# 		cleanedStateHVAC = allowedStatesHVAC['HEAT']
-# 	else:
-# 		print('Invalid `hvacMode`')
-# 		pass
-
-# 	if uiStatus['fanMode'] == 0:
-# 		cleanedStateFan = allowedStatesFan['OFF']
-# 	elif uiStatus['fanMode'] == 1:
-# 		cleanedStateFan = allowedStatesFan['ON']
-# 	else:
-# 		print('Invalid `fanMode`')
-# 		pass
-
-
-# 	cleanedState = {
-# 		'HVAC': cleanedStateHVAC,
-# 		'Fan': cleanedStateFan
-# 	}
-
-# 	return cleanedState
 
 
 if __name__=='__main__':

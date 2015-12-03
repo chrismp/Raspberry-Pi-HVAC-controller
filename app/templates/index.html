@@ -6,6 +6,9 @@
 		<p>
 			Room temperature: <mark><span id="room-temperature"></span></mark>F.
 		</p>
+		<p>
+			Last reading: <span id="last-reading"></span>
+		</p>
 <!-- 		<p>
 			HVAC: <mark><span id="hvac-status"></span></mark>
 		</p>
@@ -16,21 +19,21 @@
 
 	<div>
 		Cool
-		<input type="number" name="cool-temperature" min="65" max="80" placeholder="65-80F">
-		<input type="radio" name="cool-switch" value="0">Off
-		<input type="radio" name="cool-switch" value="1">On
+		<input id="coolTemperature" type="number" name="coolTemperature" min="60" max="90" placeholder="60-90F">
+		<input type="radio" name="coolSwitch" value="0">Off
+		<input type="radio" name="coolSwitch" value="1">On
 	</div>
 
 	<div>
 		Heat
-		<input type="number" name="heat-temperature" min="65" max="80" placeholder="65-80F">
-		<input type="radio" name="heat-switch" value="0">Off
-		<input type="radio" name="heat-switch" value="1">On
+		<input id="heatTemperature" type="number" name="heatTemperature" min="60" max="90" placeholder="60-90F">
+		<input type="radio" name="heatSwitch" value="0">Off
+		<input type="radio" name="heatSwitch" value="1">On
 	</div>
 
 	<div>
 		Fan
-		<input type="radio" name="fan-switch" value="0">Off
-		<input type="radio" name="fan-switch" value="1">On
+		<input type="radio" name="fanSwitch" value="0">Off
+		<input type="radio" name="fanSwitch" value="1">On
 	</div>
 {% endblock %}
