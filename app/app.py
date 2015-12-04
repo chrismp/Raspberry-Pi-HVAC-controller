@@ -58,6 +58,8 @@ def update():
 		)
 	)
 
+	print('/add-hvac-status')
+	print(db.getLastStatus())
 	return jsonify(desiredStatus)
 
 @app.route('/status', methods=['GET','POST'])
@@ -95,21 +97,8 @@ def status():
 			)
 		)
 
-
+	print('/status')
 	print(currentLog)
-	
-	# do i need this...?
-	# currentStatus = (
-	# 	currentLog[1],
-	# 	currentLog[2],
-	# 	currentLog[3],
-	# 	currentLog[4],
-	# 	currentLog[5],
-	# 	currentLog[6],
-	# 	currentLog[7]
-	# )
-
-	# latestStatus = db.getLastStatus()
 
 	return jsonify(
 		timeLastRead = currentLog['unixTime'],

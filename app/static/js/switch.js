@@ -41,7 +41,7 @@ $(function(){
 				$fanSwitchRadioArray
 			)
 		},
-		5000
+		10000
 	);
 
 

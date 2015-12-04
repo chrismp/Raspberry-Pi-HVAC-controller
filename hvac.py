@@ -35,21 +35,26 @@ def sendCurrentStatus():
 		url,
 		data = json.dumps(dataToSend),
 		headers = headers,
-		timeout = 100
+		timeout = 20
 	)
 
 	rJSON = r.json()
 
-	coolSwitch = int(rJSON['coolSwitch'])
-	coolTemperature = int(rJSON['coolTemperature'])
-	heatSwitch = int(rJSON['heatSwitch'])
-	heatTemperature = int(rJSON['heatTemperature'])
-	fanSwitch = int(rJSON['fanSwitch'])
+	coolSwitch = rJSON['coolSwitch']
+	coolTemperature = rJSON['coolTemperature']
+	heatSwitch = rJSON['heatSwitch']
+	heatTemperature = rJSON['heatTemperature']
+	fanSwitch = rJSON['fanSwitch']
 
 	setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
 
 def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
+	minTemp = 60
+	maxTemp = 90
+
 	roomTemperature = currentTemperatureRaw()
+	# coolTemperature = int(coolTemperature)
+	# heatTemperature = int(heatTemperature)
 
 	if coolSwitch==0:
 		print('cool switched off')
@@ -64,7 +69,7 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 	if heatSwitch==0:
 		print('heat switched off')
 	elif heatSwitch==1:
-		if roomTemperature < coolTemperature:
+		if roomTemperature < heatTemperature:
 			print('room temperature too cold, heating...')
 		else:
 			print('room temperature heated, turning off heat...')
