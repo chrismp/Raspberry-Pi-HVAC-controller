@@ -97,8 +97,9 @@ def status():
 			)
 		)
 
-	print('/status')
-	print(currentLog)
+	# print('/status')
+	# print(currentLog)
+	currentLog = db.getLastStatus()
 
 	return jsonify(
 		timeLastRead = currentLog['unixTime'],

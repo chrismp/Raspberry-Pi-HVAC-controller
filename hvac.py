@@ -56,27 +56,41 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 	# coolTemperature = int(coolTemperature)
 	# heatTemperature = int(heatTemperature)
 
-	print(roomTemperature, coolTemperature, heatTemperature)
+	# print(roomTemperature, coolTemperature, heatTemperature, coolSwitch, heatSwitch, fanSwitch)
 
-	if coolSwitch==0:
-		print('cool switched off')
-	elif coolSwitch==1:
-		if roomTemperature > coolTemperature:
-			print('room temperature too high, cooling...')
-		else:
-			print('room temperature cool, turning off cool...')
+	if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False and inTemperatureRange(minTemp,maxTemp,heatTemperature)==False:
+		print('Cool/heat temperature set out of range')
+		coolTemperature = None
+		coolSwitch = 0
+		heatTemperature = None
+		heatSwitch = 0
 	else:
-		pass
+		if coolSwitch==0:
+			print('cool switched off')
+		elif coolSwitch==1 and heatSwitch==0:
+			if roomTemperature > coolTemperature:
+				print('room temperature too high, cooling...')
+			else:
+				print('room temperature cool, turning off cool...')
+		else:
+			print('Cannot switch A/C: Make sure cool and heat are not on at the same time.')
+			coolSwitch = 0
+			pass
 
-	if heatSwitch==0:
-		print('heat switched off')
-	elif heatSwitch==1:
-		if roomTemperature < heatTemperature:
-			print('room temperature too cold, heating...')
+		if heatSwitch==0:
+			print('heat switched off')
+		elif heatSwitch==1 and coolSwitch==0:
+			if inTemperatureRange(minTemp, maxTemp, heatTemperature)==False:
+				print('Heat temperature set out of range')
+
+			if roomTemperature < heatTemperature:
+				print('room temperature too cold, heating...')
+			else:
+				print('room temperature heated, turning off heat...')
 		else:
-			print('room temperature heated, turning off heat...')
-	else:
-		pass
+			print('Cannot switch heat: Make sure cool and heat are not on at the same time.')
+			heatSwitch = 0
+			pass
 
 	if fanSwitch==0:
 		print('fan switched off')
@@ -88,9 +102,14 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 	currentStatus['heatSwitch'] = heatSwitch
 	currentStatus['heatTemperature'] = heatTemperature
 	currentStatus['fanSwitch'] = fanSwitch
+	print(currentStatus)
 
-	# print(currentStatus)
+def inTemperatureRange(minTemp, maxTemp, temperature):
+	if temperature==None or temperature=='':
+		return False
 
+	if temperature<minTemp or temperature>maxTemp:
+		return False
 
 if __name__=='__main__':
 	# Initialize variables
