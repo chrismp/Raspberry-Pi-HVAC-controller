@@ -1,5 +1,10 @@
 $(function(){
 	var $clock = $('#clock');
+	var $coolStatus = $('#cool-status');
+	var $coolCurrentTemperature = $('#cool-current-temperature');
+	var $heatStatus = $('#heat-status');
+	var $heatCurrentTemperature = $('#heat-current-temperature');
+	var $fanStatus = $('#fan-status')
 	var $lastReading = $('#last-reading');
 	var $roomTemperature = $('#room-temperature');
 	var $coolTemperature = $('#coolTemperature');
@@ -13,37 +18,57 @@ $(function(){
 	// }).ajaxStop(function(){
 	// 	do something once AJAX request stops
 	// });
-	
+
+	// Set `input` elements
+	$.get(
+		'/status',
+		function(data){
+			var timeLastRead = data.timeLastRead;
+			var roomTemperature = roundInt(data.roomTemperature);
+			var coolSwitch = data.coolSwitch;
+			var coolTemperature = data.coolTemperature;
+			var heatSwitch = data.heatSwitch;
+			var heatTemperature = data.heatTemperature;
+			var fanSwitch = data.fanSwitch;
+
+			$coolTemperature.val(coolTemperature);
+			$heatTemperature.val(heatTemperature);
+			setRadioInput($coolSwitchRadioArray, coolSwitch)
+			setRadioInput($heatSwitchRadioArray, heatSwitch)
+			setRadioInput($fanSwitchRadioArray, fanSwitch)
+		}
+	);
+
 	window.setInterval(
 		function(){
 			$clock.html(new Date(Date.now()));
 		}
 	);
 
-	update(
+	updateStatus(
+		$coolStatus,
+		$coolCurrentTemperature,
+		$heatStatus,
+		$heatCurrentTemperature,
+		$fanStatus,
 		$lastReading, 
-		$roomTemperature, 
-		$coolTemperature,
-		$heatTemperature, 
-		$coolSwitchRadioArray,
-		$heatSwitchRadioArray, 
-		$fanSwitchRadioArray
+		$roomTemperature
 	)
+
 	window.setInterval(
 		function(){
-			update(
+			updateStatus(
+				$coolStatus,
+				$coolCurrentTemperature,
+				$heatStatus,
+				$heatCurrentTemperature,
+				$fanStatus,
 				$lastReading, 
-				$roomTemperature, 
-				$coolTemperature, 
-				$heatTemperature, 
-				$coolSwitchRadioArray, 
-				$heatSwitchRadioArray, 
-				$fanSwitchRadioArray
+				$roomTemperature
 			)
 		},
 		10000
 	);
-
 
 	var unitDevicePartsArray = [
 		$coolSwitchRadioArray,
@@ -86,7 +111,7 @@ $(function(){
 				timeout: 20000, // give the A/C 20 seconds
 				success: function(data){
 					// console.log('got response');
-					console.log(data);
+					// console.log(data);
 				},
 				error: function(error){
 					alert('HVAC/fan did not get your request!');

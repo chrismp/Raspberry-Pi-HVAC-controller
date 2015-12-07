@@ -21,11 +21,10 @@ function roundInt(num){
 	return Math.round(num);
 }
 
-function update(lastReadingElem, roomTemperatureElem, coolTemperatureElem, heatTemperatureElem, coolSwitchRadioArray, heatSwitchRadioArray, fanSwitchRadioArray){
+function updateStatus(coolStatusElem, coolCurrentTemperatureElem, heatStatusElem, heatCurrentTemperatureElem, fanStatusElem, lastReadingElem, roomTemperatureElem){
 	$.get(
 		'/status',
 		function(data){
-			// console.log(data);
 			var timeLastRead = data.timeLastRead;
 			var roomTemperature = roundInt(data.roomTemperature);
 			var coolSwitch = data.coolSwitch;
@@ -34,13 +33,16 @@ function update(lastReadingElem, roomTemperatureElem, coolTemperatureElem, heatT
 			var heatTemperature = data.heatTemperature;
 			var fanSwitch = data.fanSwitch;
 
-			lastReadingElem.html(new Date(timeLastRead*1000));
+			coolTemperature = coolTemperature===null ? 'Not yet set' : coolTemperature;
+			heatTemperature = heatTemperature===null ? 'Not yet set' : heatTemperature;
+
+			coolStatusElem.html(coolSwitch);
+			coolCurrentTemperatureElem.html(coolTemperature);
+			heatStatusElem.html(heatSwitch);
+			heatCurrentTemperatureElem.html(heatTemperature);
+			fanStatusElem.html(fanSwitch);
 			roomTemperatureElem.html(roomTemperature);
-			coolTemperatureElem.val(coolTemperature)
-			heatTemperatureElem.val(heatTemperature);
-			setRadioInput(coolSwitchRadioArray, coolSwitch)
-			setRadioInput(heatSwitchRadioArray, heatSwitch)
-			setRadioInput(fanSwitchRadioArray, fanSwitch)
+			lastReadingElem.html(new Date(timeLastRead*1000));
 		}
 	);
 }

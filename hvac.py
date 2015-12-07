@@ -56,6 +56,8 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 	# coolTemperature = int(coolTemperature)
 	# heatTemperature = int(heatTemperature)
 
+	print(roomTemperature, coolTemperature, heatTemperature)
+
 	if coolSwitch==0:
 		print('cool switched off')
 	elif coolSwitch==1:
@@ -87,7 +89,7 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 	currentStatus['heatTemperature'] = heatTemperature
 	currentStatus['fanSwitch'] = fanSwitch
 
-	print(currentStatus)
+	# print(currentStatus)
 
 
 if __name__=='__main__':
