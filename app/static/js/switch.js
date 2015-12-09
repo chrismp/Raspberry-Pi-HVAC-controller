@@ -1,4 +1,8 @@
 $(function(){
+	$("[type='number']").keypress(function (evt) {
+	    evt.preventDefault();
+	});
+	
 	var $clock = $('#clock');
 	var $coolStatus = $('#cool-status');
 	var $coolCurrentTemperature = $('#cool-current-temperature');
@@ -84,8 +88,8 @@ $(function(){
 			var name = $this.attr('name');
 
 			// `val` attribute of `input` user clicked.
-			// For HVAC: 0 is off, 1 is cool, 2 is heat
-			// For fan: 0 is off, 1 is on
+			// If it's a temeprature `input`, this is the temperature value, or else...
+			// ...for the others, 0 is 'off', ` is 'on'
 			var switchStatus = $this.val();
 
 			var temperatureType = $this.parent()
@@ -96,12 +100,25 @@ $(function(){
 				.val();
 
 			var dataToSend = {};
-			dataToSend[name] = switchStatus;
+			dataToSend[name] = +switchStatus;
 
+			console.log(dataToSend);
+
+			// If user switches cool or heat...
+			// ...or changes cool or heat temperature...
+			// ...add that info to `dataToSend` object
 			if(temperatureType!=undefined){
 				dataToSend[temperatureType] = temperature;
+				dataTempType = dataToSend[temperatureType]
+
+				if(
+					(dataTempType===''||dataTempType===null) && 
+					dataToSend[name]===1
+				){
+					alert('Choose a temperature before turning this on.');
+				}
 			}
-			
+
 
 			$.ajax({
 				url: '/status',

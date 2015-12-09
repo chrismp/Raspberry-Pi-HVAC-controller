@@ -33,16 +33,21 @@ function updateStatus(coolStatusElem, coolCurrentTemperatureElem, heatStatusElem
 			var heatTemperature = data.heatTemperature;
 			var fanSwitch = data.fanSwitch;
 
-			coolTemperature = coolTemperature===null ? 'Not yet set' : coolTemperature;
-			heatTemperature = heatTemperature===null ? 'Not yet set' : heatTemperature;
-
-			coolStatusElem.html(coolSwitch);
-			coolCurrentTemperatureElem.html(coolTemperature);
-			heatStatusElem.html(heatSwitch);
-			heatCurrentTemperatureElem.html(heatTemperature);
-			fanStatusElem.html(fanSwitch);
-			roomTemperatureElem.html(roomTemperature);
 			lastReadingElem.html(new Date(timeLastRead*1000));
+			coolStatusElem.html(translateSwitch(coolSwitch));
+			coolCurrentTemperatureElem.html(translateTemperature(coolTemperature));
+			heatStatusElem.html(translateSwitch(heatSwitch));
+			heatCurrentTemperatureElem.html(translateTemperature(heatTemperature));
+			fanStatusElem.html(translateSwitch(fanSwitch));
+			roomTemperatureElem.html(translateTemperature(roomTemperature));
 		}
 	);
+}
+
+function translateSwitch(status){
+	return status===0 ? 'Off' : 'On';
+}
+
+function translateTemperature(temp){
+	return temp===null ? 'Temperature not yet set' : temp;
 }

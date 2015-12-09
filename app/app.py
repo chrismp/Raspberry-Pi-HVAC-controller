@@ -84,21 +84,31 @@ def status():
 			else:
 				desiredStatus[key] = currentLog[key]
 
+		coolTemperature = desiredStatus['coolTemperature']
+		coolSwitch = desiredStatus['coolSwitch']
+		heatTemperature = desiredStatus['heatTemperature']
+		heatSwitch = desiredStatus['heatSwitch']
+
+		if coolTemperature==None or coolTemperature=='':
+			coolSwitch = 0
+			coolTemperature = None
+
+		if heatTemperature==None or heatTemperature=='':
+			heatSwitch = 0
+			heatTemperature = None
 
 		db.addStatus(
 			AcStatus(
 				time.time(),
 				currentLog['roomTemperature'],
-				desiredStatus['coolSwitch'],
-				desiredStatus['coolTemperature'],
-				desiredStatus['heatSwitch'],
-				desiredStatus['heatTemperature'],
+				coolSwitch,
+				coolTemperature,
+				heatSwitch,
+				heatTemperature,
 				desiredStatus['fanSwitch']
 			)
 		)
 
-	# print('/status')
-	# print(currentLog)
 	currentLog = db.getLastStatus()
 
 	return jsonify(

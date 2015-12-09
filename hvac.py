@@ -53,44 +53,40 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 	maxTemp = 90
 
 	roomTemperature = currentTemperatureRaw()
-	# coolTemperature = int(coolTemperature)
-	# heatTemperature = int(heatTemperature)
 
-	# print(roomTemperature, coolTemperature, heatTemperature, coolSwitch, heatSwitch, fanSwitch)
-
-	if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False and inTemperatureRange(minTemp,maxTemp,heatTemperature)==False:
-		print('Cool/heat temperature set out of range')
-		coolTemperature = None
+	if coolTemperature==None or coolTemperature=='':
 		coolSwitch = 0
-		heatTemperature = None
-		heatSwitch = 0
+		coolTemperature = None
 	else:
-		if coolSwitch==0:
-			print('cool switched off')
-		elif coolSwitch==1 and heatSwitch==0:
-			if roomTemperature > coolTemperature:
-				print('room temperature too high, cooling...')
-			else:
-				print('room temperature cool, turning off cool...')
-		else:
-			print('Cannot switch A/C: Make sure cool and heat are not on at the same time.')
+		if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False:
+			print('Cool temperature out of range')
 			coolSwitch = 0
-			pass
-
-		if heatSwitch==0:
-			print('heat switched off')
-		elif heatSwitch==1 and coolSwitch==0:
-			if inTemperatureRange(minTemp, maxTemp, heatTemperature)==False:
-				print('Heat temperature set out of range')
-
-			if roomTemperature < heatTemperature:
-				print('room temperature too cold, heating...')
-			else:
-				print('room temperature heated, turning off heat...')
 		else:
-			print('Cannot switch heat: Make sure cool and heat are not on at the same time.')
+			if coolSwitch==1 and heatSwitch==1:
+				coolSwitch = 1
+				heatSwitch = 0
+
+			if roomTemperature > int(coolTemperature):
+				print('Room temperature too high. Cooling...')
+			else:
+				print('Room temp cool, turning off cool.')
+
+	if heatTemperature==None or heatTemperature=='':
+		heatSwitch = 0
+		heatTemperature = None
+	else:
+		if inTemperatureRange(minTemp, maxTemp, heatTemperature)==False:
+			print('Heat temp out of range')
 			heatSwitch = 0
-			pass
+		else:
+			if coolSwitch==1 and heatSwitch==1:
+				coolSwitch = 0
+				heatSwitch = 1
+
+			if roomTemperature < int(heatTemperature):
+				print('Room temp too cold. Heating...')
+			else:
+				print('Room temp warm. Turning off heat.')
 
 	if fanSwitch==0:
 		print('fan switched off')
@@ -108,7 +104,7 @@ def inTemperatureRange(minTemp, maxTemp, temperature):
 	if temperature==None or temperature=='':
 		return False
 
-	if temperature<minTemp or temperature>maxTemp:
+	if int(temperature)<minTemp or int(temperature)>maxTemp:
 		return False
 
 if __name__=='__main__':
