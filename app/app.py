@@ -69,6 +69,9 @@ def status():
 	# Sets new desired state based on user input.
 	# Return current state of HVAC and fan
 	if request.method == 'POST':
+		# waitTime = 15
+		# time.sleep(waitTime)
+
 		response = request.json
 
 		# `response` won't have all the keys `desiredStatus` has.

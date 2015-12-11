@@ -49,6 +49,10 @@ def sendCurrentStatus():
 	setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
 
 def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
+	delaySeconds = 15
+	time.sleep(delaySeconds)
+	print('Running `setStatus()` {0}'.format(random.uniform(1,100)))
+
 	minTemp = 60
 	maxTemp = 90
 
