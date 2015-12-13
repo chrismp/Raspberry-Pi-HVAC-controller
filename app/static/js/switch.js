@@ -116,6 +116,9 @@ $(function(){
 					dataToSend[name]===1
 				){
 					alert('Choose a temperature before turning this on.');
+					var $radioButtons = $('input[type="radio"][name="'+name+'"]');
+					console.log($radioButtons[1]);
+					$radioButtons[0].checked = true;
 				}
 			}
 
