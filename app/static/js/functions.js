@@ -51,3 +51,7 @@ function translateSwitch(status){
 function translateTemperature(temp){
 	return temp===null ? 'Temperature not yet set' : temp;
 }
+
+function switchesOn(switch1, switch2){
+	return switch1.checked===true && switch2.checked===true;
+}

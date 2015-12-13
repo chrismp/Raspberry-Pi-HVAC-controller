@@ -71,7 +71,7 @@ $(function(){
 				$roomTemperature
 			)
 		},
-		5000
+		10000
 	);
 
 	var unitDevicePartsArray = [
@@ -102,7 +102,7 @@ $(function(){
 			var dataToSend = {};
 			dataToSend[name] = +switchStatus;
 
-			console.log(dataToSend);
+			// console.log(dataToSend);
 
 			// If user switches cool or heat...
 			// ...or changes cool or heat temperature...
@@ -117,11 +117,18 @@ $(function(){
 				){
 					alert('Choose a temperature before turning this on.');
 					var $radioButtons = $('input[type="radio"][name="'+name+'"]');
-					console.log($radioButtons[1]);
 					$radioButtons[0].checked = true;
 				}
 			}
 
+			if( switchesOn($coolSwitchRadioArray[1], $heatSwitchRadioArray[1])===true ){
+				// alert('"Cool" and "Heat" cannot be on at the same time.');
+				if(name==='coolSwitch'){
+					$heatSwitchRadioArray[0].checked = true;
+				} else if(name==='heatSwitch'){
+					$coolSwitchRadioArray[0].checked = true;
+				}
+			}
 
 			$.ajax({
 				url: '/status',

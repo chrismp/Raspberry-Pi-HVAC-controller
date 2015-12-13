@@ -4,6 +4,7 @@ from collections import namedtuple
 import datetime
 import time
 import db
+import methods
 
 app = Flask(__name__, static_url_path='')
 
@@ -59,7 +60,7 @@ def update():
 	)
 
 	print('/add-hvac-status')
-	print(db.getLastStatus())
+	print(desiredStatus)
 	return jsonify(desiredStatus)
 
 @app.route('/status', methods=['GET','POST'])
@@ -69,9 +70,6 @@ def status():
 	# Sets new desired state based on user input.
 	# Return current state of HVAC and fan
 	if request.method == 'POST':
-		# waitTime = 15
-		# time.sleep(waitTime)
-
 		response = request.json
 
 		# `response` won't have all the keys `desiredStatus` has.
@@ -87,31 +85,50 @@ def status():
 			else:
 				desiredStatus[key] = currentLog[key]
 
-		coolTemperature = desiredStatus['coolTemperature']
-		coolSwitch = desiredStatus['coolSwitch']
-		heatTemperature = desiredStatus['heatTemperature']
-		heatSwitch = desiredStatus['heatSwitch']
+		if 'coolSwitch' in response:
+			if response['coolSwitch']==0:
+				desiredStatus['coolSwitch'] = 0
+			elif response['coolSwitch']==1:
+				desiredStatus['coolSwitch'] = 1
+				desiredStatus['heatSwitch'] = 0
 
-		if coolTemperature==None or coolTemperature=='':
-			coolSwitch = 0
-			coolTemperature = None
+			if 'coolTemperature' in response:
+				if methods.blankOrNone(response['coolTemperature']):
+					desiredStatus['coolSwitch'] = 0
+					desiredStatus['coolTemperature'] = None
 
-		if heatTemperature==None or heatTemperature=='':
-			heatSwitch = 0
-			heatTemperature = None
+		if 'heatSwitch' in response:
+			if response['heatSwitch']==0:
+				desiredStatus['heatSwitch'] = 0
+			elif response['heatSwitch']==1:
+				desiredStatus['coolSwitch'] = 0
+				desiredStatus['heatSwitch'] = 1
+
+			if 'heatTemperature' in response:
+				if methods.blankOrNone(response['heatTemperature']):
+					desiredStatus['heatSwitch'] = 0
+					desiredStatus['heatTemperature'] = None
+
+		if 'fanSwitch' in response:
+			if response['fanSwitch']==0 or response['fanSwitch']==1:
+				desiredStatus['fanSwitch'] == response['fanSwitch']
+			else:
+				desiredStatus['fanSwitch'] = 0
 
 		db.addStatus(
 			AcStatus(
 				time.time(),
 				currentLog['roomTemperature'],
-				coolSwitch,
-				coolTemperature,
-				heatSwitch,
-				heatTemperature,
+				desiredStatus['coolSwitch'],
+				desiredStatus['coolTemperature'],
+				desiredStatus['heatSwitch'],
+				desiredStatus['heatTemperature'],
 				desiredStatus['fanSwitch']
 			)
 		)
 
+	print('/status')
+	print(desiredStatus)
 	currentLog = db.getLastStatus()
 
 	return jsonify(
@@ -123,7 +140,6 @@ def status():
 		heatTemperature = currentLog['heatTemperature'],
 		fanSwitch = currentLog['fanSwitch']
 	)
-
 
 if __name__=='__main__':
 	app.run(debug=True)
