@@ -21,6 +21,7 @@ AcStatus = namedtuple(
 	[
 		'unixTime',
 		'roomTemperature',
+		'humidity',
 		'coolSwitch',
 		'coolTemperature',
 		'heatSwitch',
@@ -40,6 +41,7 @@ def homepage():
 def update():
 	response = request.json
 	roomTemperature = response['roomTemperature']
+	humidity = response['humidity']
 	coolSwitch = response['coolSwitch']
 	coolTemperature = response['coolTemperature']
 	heatSwitch = response['heatSwitch']
@@ -51,6 +53,7 @@ def update():
 		AcStatus(
 			time.time(),
 			roomTemperature,
+			humidity,
 			coolSwitch,
 			coolTemperature,
 			heatSwitch,
@@ -119,6 +122,7 @@ def status():
 			AcStatus(
 				time.time(),
 				currentLog['roomTemperature'],
+				currentLog['humidity'],
 				desiredStatus['coolSwitch'],
 				desiredStatus['coolTemperature'],
 				desiredStatus['heatSwitch'],
@@ -134,6 +138,7 @@ def status():
 	return jsonify(
 		timeLastRead = currentLog['unixTime'],
 		roomTemperature = currentLog['roomTemperature'],
+		humidity = currentLog['humidity'],
 		coolSwitch = currentLog['coolSwitch'],
 		coolTemperature = currentLog['coolTemperature'],
 		heatSwitch = currentLog['heatSwitch'],

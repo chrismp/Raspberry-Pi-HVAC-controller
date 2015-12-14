@@ -11,6 +11,7 @@ $(function(){
 	var $fanStatus = $('#fan-status')
 	var $lastReading = $('#last-reading');
 	var $roomTemperature = $('#room-temperature');
+	var $humidity = $('#humidity');
 	var $coolTemperature = $('#coolTemperature');
 	var $coolSwitchRadioArray = $('input:radio[name=coolSwitch]');
 	var $heatTemperature = $('#heatTemperature');
@@ -29,6 +30,7 @@ $(function(){
 		function(data){
 			var timeLastRead = data.timeLastRead;
 			var roomTemperature = roundInt(data.roomTemperature);
+			var humidity = roundInt(data.humidity);
 			var coolSwitch = data.coolSwitch;
 			var coolTemperature = data.coolTemperature;
 			var heatSwitch = data.heatSwitch;
@@ -56,7 +58,8 @@ $(function(){
 		$heatCurrentTemperature,
 		$fanStatus,
 		$lastReading, 
-		$roomTemperature
+		$roomTemperature,
+		$humidity
 	)
 
 	window.setInterval(
@@ -68,7 +71,8 @@ $(function(){
 				$heatCurrentTemperature,
 				$fanStatus,
 				$lastReading, 
-				$roomTemperature
+				$roomTemperature,
+				$humidity
 			)
 		},
 		10000

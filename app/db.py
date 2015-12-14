@@ -7,13 +7,14 @@ def makeDB():
 		'''
 			CREATE TABLE IF NOT EXISTS statuses(
 				row integer primary key autoincrement,
-				unixTime float,
-				roomTemperature float,
-				coolSwitch boolean,
-				coolTemperature integer,
-				heatSwitch boolean,
-				heatTemperature integer,
-				fanSwitch boolean
+				unixTime FLOAT NOT NULL,
+				roomTemperature FLOAT,
+				humidity FLOAT,
+				coolSwitch BOOLEAN DEFAULT FALSE NOT NULL,
+				coolTemperature INTEGER,
+				heatSwitch BOOLEAN DEFAULT FALSE NOT NULL,
+				heatTemperature INTEGER,
+				fanSwitch BOOLEAN DEFAULT FALSE NOT NULL
 			)
 		'''
 	)
@@ -26,6 +27,7 @@ def addStatus(status):
 			INSERT INTO statuses(
 				unixTime,
 				roomTemperature,
+				humidity,
 				coolSwitch,
 				coolTemperature,
 				heatSwitch,
@@ -33,6 +35,7 @@ def addStatus(status):
 				fanSwitch
 			)
 			VALUES (
+				?,
 				?,
 				?,
 				?,
@@ -59,16 +62,5 @@ def getLastStatus():
 	data = c.fetchone()
 	return data
 
-# http://stackoverflow.com/questions/3300464/how-can-i-get-dict-from-sqlite-query
-# def dict_factory(cursor, row):
-#     d = {}
-#     for idx, col in enumerate(cursor.description):
-#         d[col[0]] = row[idx]
-#     return d
 
 makeDB()
-
-# try:
-# 	makeDB()
-# except sqlite3.OperationalError:
-# 	pass

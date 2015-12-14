@@ -21,12 +21,13 @@ function roundInt(num){
 	return Math.round(num);
 }
 
-function updateStatus(coolStatusElem, coolCurrentTemperatureElem, heatStatusElem, heatCurrentTemperatureElem, fanStatusElem, lastReadingElem, roomTemperatureElem){
+function updateStatus(coolStatusElem, coolCurrentTemperatureElem, heatStatusElem, heatCurrentTemperatureElem, fanStatusElem, lastReadingElem, roomTemperatureElem, humidityElem){
 	$.get(
 		'/status',
 		function(data){
 			var timeLastRead = data.timeLastRead;
 			var roomTemperature = roundInt(data.roomTemperature);
+			var humidity = roundInt(data.humidity);
 			var coolSwitch = data.coolSwitch;
 			var coolTemperature = data.coolTemperature;
 			var heatSwitch = data.heatSwitch;
@@ -40,6 +41,7 @@ function updateStatus(coolStatusElem, coolCurrentTemperatureElem, heatStatusElem
 			heatCurrentTemperatureElem.html(translateTemperature(heatTemperature));
 			fanStatusElem.html(translateSwitch(fanSwitch));
 			roomTemperatureElem.html(translateTemperature(roomTemperature));
+			humidityElem.html(humidity);
 		}
 	);
 }

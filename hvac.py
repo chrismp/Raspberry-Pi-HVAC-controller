@@ -15,9 +15,16 @@ def currentTemperatureRaw():
 def currentTemperatureRound(temperatureRaw):
 	return int(round(temperatureRaw))
 
+def currentHumidityRaw():
+	return random.uniform(60.0, 90.0)
+
+def currentHumidityRound(humidityRaw):
+	return int(round(humidityRaw))
+
 def sendCurrentStatus():
 	dataToSend = {
 		'roomTemperature': currentTemperatureRaw(),
+		'humidity': currentHumidityRaw(),
 		'coolSwitch': currentStatus['coolSwitch'],
 		'coolTemperature': currentStatus['coolTemperature'],
 		'heatSwitch': currentStatus['heatSwitch'],
