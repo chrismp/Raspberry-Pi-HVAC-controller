@@ -50,7 +50,7 @@ def update():
 
 	# add current status received from Pi to database
 	db.addStatus(
-		AcStatus(
+		(
 			time.time(),
 			roomTemperature,
 			humidity,
@@ -62,8 +62,6 @@ def update():
 		)
 	)
 
-	print('/add-hvac-status')
-	print(desiredStatus)
 	return jsonify(desiredStatus)
 
 @app.route('/status', methods=['GET','POST'])
@@ -119,7 +117,7 @@ def status():
 				desiredStatus['fanSwitch'] = 0
 
 		db.addStatus(
-			AcStatus(
+			(
 				time.time(),
 				currentLog['roomTemperature'],
 				currentLog['humidity'],
@@ -131,10 +129,10 @@ def status():
 			)
 		)
 
-	print('/status')
-	print(desiredStatus)
+	# print('/status')
+	# print(desiredStatus)
 	currentLog = db.getLastStatus()
-
+	print(currentLog)
 	return jsonify(
 		timeLastRead = currentLog['unixTime'],
 		roomTemperature = currentLog['roomTemperature'],

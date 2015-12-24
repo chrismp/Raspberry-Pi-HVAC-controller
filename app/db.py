@@ -1,12 +1,19 @@
-import sqlite3
-conn = sqlite3.connect('statuses.db', check_same_thread=False)
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+# Tutorial: http://zetcode.com/db/mysqlpython/
+
+import MySQLdb as mdb
+import MySQLdb.cursors
+import sys
 
 def makeDB():
+	conn = mdb.connect(server, user, pw, db)
 	c = conn.cursor()
 	c.execute(
 		'''
 			CREATE TABLE IF NOT EXISTS statuses(
-				row integer primary key autoincrement,
+				row INT(11) AUTO_INCREMENT PRIMARY KEY,
 				unixTime FLOAT NOT NULL,
 				roomTemperature FLOAT,
 				humidity FLOAT,
@@ -20,7 +27,11 @@ def makeDB():
 	)
 	conn.commit()
 
+
 def addStatus(status):
+	print(status)
+
+	conn = mdb.connect(server, user, pw, db)
 	c = conn.cursor()
 	c.execute(
 		'''
@@ -35,32 +46,42 @@ def addStatus(status):
 				fanSwitch
 			)
 			VALUES (
-				?,
-				?,
-				?,
-				?,
-				?,
-				?,
-				?,
-				?
+				%s,
+				%s,
+				%s,
+				%s,
+				%s,
+				%s,
+				%s,
+				%s
 			)
-		''',status
+		''',
+		status,
 	)
 	conn.commit()
 
 def getLastStatus():
-	conn.row_factory = sqlite3.Row
+	conn = mdb.connect(server, user, pw, db, cursorclass=MySQLdb.cursors.DictCursor)
 	c = conn.cursor()
 	c.execute(
 		'''
-			SELECT *
-			FROM statuses
-			ORDER BY row DESC 
-			LIMIT 1
+		SELECT * 
+		FROM statuses 
+		ORDER BY row DESC 
+		LIMIT 1
 		'''
 	)
 	data = c.fetchone()
 	return data
 
 
-makeDB()
+try:
+	server = 'localhost'
+	user = 'root'
+	pw = 'password'
+	db = 'HVACPi'
+	makeDB()
+except mdb.Error, e:
+	print "Error %d: %s" % (e.args[0],e.args[1])
+	sys.exit(1)
+

@@ -44,7 +44,7 @@ def sendCurrentStatus():
 		headers = headers,
 		timeout = 20
 	)
-
+	print(json.dumps(dataToSend))
 	rJSON = r.json()
 
 	coolSwitch = rJSON['coolSwitch']
@@ -56,8 +56,8 @@ def sendCurrentStatus():
 	setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
 
 def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
-	print('=========')
-	print('Running `setStatus()` {0}'.format(random.uniform(1,100)))
+	# print('=========')
+	# print('Running `setStatus()` {0}'.format(random.uniform(1,100)))
 	# delaySeconds = 15
 	# time.sleep(delaySeconds)
 
