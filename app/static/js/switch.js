@@ -133,7 +133,7 @@ $(function(){
 					$coolSwitchRadioArray[0].checked = true;
 				}
 			}
-
+			console.log(dataToSend);
 			$.ajax({
 				url: '/status',
 				type: 'POST',

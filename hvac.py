@@ -1,13 +1,13 @@
 import requests
 import random
-# import signal
-# import sys
+import sys
 import datetime
 import time
-# import os
-# import glob
 import json
 # import RPi.GPIO as io
+import os
+from dotenv import load_dotenv
+
 
 def currentTemperatureRaw():
 	return random.uniform(60.0, 90.0)
@@ -31,8 +31,9 @@ def sendCurrentStatus():
 		'heatTemperature': currentStatus['heatTemperature'],
 		'fanSwitch': currentStatus['fanSwitch']
 	}
+	print(dataToSend)
 
-	url = 'http://localhost:5000/add-hvac-status'
+	url = baseURL+'/add-hvac-status'
 	headers = {
 		'Content-type': 'application/json',
 		'Accept': 'text/plain'
@@ -44,7 +45,7 @@ def sendCurrentStatus():
 		headers = headers,
 		timeout = 20
 	)
-	print(json.dumps(dataToSend))
+
 	rJSON = r.json()
 
 	coolSwitch = rJSON['coolSwitch']
@@ -56,11 +57,6 @@ def sendCurrentStatus():
 	setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
 
 def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
-	# print('=========')
-	# print('Running `setStatus()` {0}'.format(random.uniform(1,100)))
-	# delaySeconds = 15
-	# time.sleep(delaySeconds)
-
 	minTemp = 60
 	maxTemp = 90
 
@@ -121,7 +117,6 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 	currentStatus['fanSwitch'] = fanSwitch
 	print(currentStatus)
 
-
 def inTemperatureRange(minTemp, maxTemp, temperature):
 	if temperature==None or temperature=='':
 		return False
@@ -130,14 +125,40 @@ def inTemperatureRange(minTemp, maxTemp, temperature):
 		return False
 
 if __name__=='__main__':
-	# Initialize variables
-	currentStatus = {
-		'coolSwitch': 0,
-		'coolTemperature': None,
-		'heatSwitch': 0,
-		'heatTemperature': None,
-		'fanSwitch': 0
-	}
+	# Setting up environmental variables
+	# See https://github.com/theskumar/python-dotenv
+	dotenvPath = os.path.join(
+		os.path.dirname(__file__),
+		'.env'
+	)
+	load_dotenv(dotenvPath)
+
+	# Get current status
+	baseURL = os.environ.get('BASE_URL')
+	statusURL = baseURL+'/status'
+	statusURLResponse = requests.get(
+		statusURL
+	)
+
+	startupStatus = statusURLResponse.json()
+	startupStatusDictionary = startupStatus['Status']
+	
+	if startupStatusDictionary==None:
+		currentStatus = {
+			'coolSwitch': 0,
+			'coolTemperature': None,
+			'heatSwitch': 0,
+			'heatTemperature': None,
+			'fanSwitch': 0
+		}
+	else:
+		currentStatus = {
+			'coolSwitch': startupStatusDictionary['coolSwitch'],
+			'coolTemperature': startupStatusDictionary['coolTemperature'],
+			'heatSwitch': startupStatusDictionary['heatSwitch'],
+			'heatTemperature': startupStatusDictionary['heatTemperature'],
+			'fanSwitch': startupStatusDictionary['fanSwitch']
+		}
 
 	try:
 		while True:

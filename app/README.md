@@ -1,0 +1,1 @@
+Trouble with MySQL on python 3.4 virtual environment fix: http://stackoverflow.com/questions/14087598/python-3-3-importerror-no-module-named-configparser

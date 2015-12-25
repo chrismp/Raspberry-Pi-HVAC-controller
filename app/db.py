@@ -1,14 +1,10 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-# Tutorial: http://zetcode.com/db/mysqlpython/
-
 import MySQLdb as mdb
 import MySQLdb.cursors
 import sys
+import os
 
 def makeDB():
-	conn = mdb.connect(server, user, pw, db)
+	conn = mdb.connect(host, user, pw, db)
 	c = conn.cursor()
 	c.execute(
 		'''
@@ -31,7 +27,7 @@ def makeDB():
 def addStatus(status):
 	print(status)
 
-	conn = mdb.connect(server, user, pw, db)
+	conn = mdb.connect(host, user, pw, db)
 	c = conn.cursor()
 	c.execute(
 		'''
@@ -61,14 +57,14 @@ def addStatus(status):
 	conn.commit()
 
 def getLastStatus():
-	conn = mdb.connect(server, user, pw, db, cursorclass=MySQLdb.cursors.DictCursor)
+	conn = mdb.connect(host, user, pw, db, cursorclass=MySQLdb.cursors.DictCursor)
 	c = conn.cursor()
 	c.execute(
 		'''
-		SELECT * 
-		FROM statuses 
-		ORDER BY row DESC 
-		LIMIT 1
+			SELECT * 
+			FROM statuses 
+			ORDER BY row DESC 
+			LIMIT 1
 		'''
 	)
 	data = c.fetchone()
@@ -76,12 +72,12 @@ def getLastStatus():
 
 
 try:
-	server = 'localhost'
-	user = 'root'
-	pw = 'password'
-	db = 'HVACPi'
+	host = os.environ.get('HOSTNAME')
+	user = os.environ.get('USERNAME')
+	pw = os.environ.get('PASSWORD')
+	db = os.environ.get('DATABASE')
 	makeDB()
-except mdb.Error, e:
-	print "Error %d: %s" % (e.args[0],e.args[1])
+except mdb.Error as e:
+	print("Error %d: %s" % (e.args[0],e.args[1]))
 	sys.exit(1)
 
