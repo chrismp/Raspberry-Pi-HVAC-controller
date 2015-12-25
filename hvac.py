@@ -4,8 +4,8 @@ import sys
 import datetime
 import time
 import json
-# import RPi.GPIO as io
 import os
+# import RPi.GPIO as io
 from dotenv import load_dotenv
 
 
@@ -31,7 +31,6 @@ def sendCurrentStatus():
 		'heatTemperature': currentStatus['heatTemperature'],
 		'fanSwitch': currentStatus['fanSwitch']
 	}
-	print(dataToSend)
 
 	url = baseURL+'/add-hvac-status'
 	headers = {
@@ -45,7 +44,7 @@ def sendCurrentStatus():
 		headers = headers,
 		timeout = 20
 	)
-
+	print r.content
 	rJSON = r.json()
 
 	coolSwitch = rJSON['coolSwitch']
@@ -57,8 +56,8 @@ def sendCurrentStatus():
 	setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
 
 def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
-	minTemp = 60
-	maxTemp = 90
+	minTemp = int( os.environ.get('MINIMUM_TEMPERATURE') )
+	maxTemp = int( os.environ.get('MAXIMUM_TEMPERATURE') )
 
 	roomTemperature = currentTemperatureRaw() # Replace with code for getting raw temperature read by digital temperature sensor
 
@@ -70,7 +69,7 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 
 	if coolSwitch==1:
 		if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False:
-			print('Cool temperature out of range')
+			print 'Cool temperature out of range'
 			coolSwitch = 0
 			coolTemperature = None
 		else:
@@ -79,16 +78,16 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 				heatSwitch = 0
 
 			if roomTemperature > int(coolTemperature):
-				print('Room temperature too high. Cooling...')
+				print 'Room temperature too high. Cooling...'
 			else:
-				print('Room temp cool, turning off cool.')
+				print 'Room temp cool, turning off cool.'
 	else:
-		print('cool switched off')
+		print 'cool switched off'
 		coolSwitch = 0
 
 	if heatSwitch==1:
 		if inTemperatureRange(minTemp, maxTemp, heatTemperature)==False:
-			print('Heat temp out of range')
+			print 'Heat temp out of range'
 			heatSwitch = 0
 			heatTemperature = None
 		else:
@@ -97,17 +96,17 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 				heatSwitch = 1
 
 			if roomTemperature < int(heatTemperature):
-				print('Room temp too cold. Heating...')
+				print 'Room temp too cold. Heating...'
 			else:
-				print('Room temp warm. Turning off heat.')
+				print 'Room temp warm. Turning off heat.'
 	else:
-		print('heat switched off')
+		print 'heat switched off'
 		heatSwitch = 0
 
 	if fanSwitch==1:
-		print('fan switched on')
+		print 'fan switched on'
 	else:
-		print('fan switched off')
+		print 'fan switched off'
 		fanSwitch = 0
 
 	currentStatus['coolSwitch'] = coolSwitch

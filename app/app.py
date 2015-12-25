@@ -1,13 +1,10 @@
 from flask import Flask, render_template, flash, redirect, jsonify, request
+from collections import namedtuple
+# from app import app
 import datetime
 import time
-import sys 
-import os
-
-# my scripts
 import db
 import methods
-
 
 app = Flask(__name__, static_url_path='')
 
@@ -19,6 +16,19 @@ desiredStatus = {
 	'fanSwitch': 0
 }
 
+AcStatus = namedtuple(
+	'AcStatus',
+	[
+		'unixTime',
+		'roomTemperature',
+		'humidity',
+		'coolSwitch',
+		'coolTemperature',
+		'heatSwitch',
+		'heatTemperature',
+		'fanSwitch'
+	]
+)
 
 @app.route('/', methods=['GET','POST'])
 @app.route('/index', methods=['GET','POST'])
@@ -38,10 +48,9 @@ def update():
 	heatTemperature = response['heatTemperature']
 	fanSwitch = response['fanSwitch']
 
-
 	# add current status received from Pi to database
 	db.addStatus(
-		(
+		AcStatus(
 			time.time(),
 			roomTemperature,
 			humidity,
@@ -53,6 +62,8 @@ def update():
 		)
 	)
 
+	print('/add-hvac-status')
+	print(desiredStatus)
 	return jsonify(desiredStatus)
 
 @app.route('/status', methods=['GET','POST'])
@@ -108,7 +119,7 @@ def status():
 				desiredStatus['fanSwitch'] = 0
 
 		db.addStatus(
-			(
+			AcStatus(
 				time.time(),
 				currentLog['roomTemperature'],
 				currentLog['humidity'],
@@ -120,23 +131,19 @@ def status():
 			)
 		)
 
+	print('/status')
+	print(desiredStatus)
 	currentLog = db.getLastStatus()
-	if currentLog==None:
-		return jsonify({'Status':None})
 
 	return jsonify(
-		{
-			'Status':{
-				'timeLastRead': currentLog['unixTime'],
-				'roomTemperature': currentLog['roomTemperature'],
-				'humidity': currentLog['humidity'],
-				'coolSwitch': currentLog['coolSwitch'],
-				'coolTemperature': currentLog['coolTemperature'],
-				'heatSwitch': currentLog['heatSwitch'],
-				'heatTemperature': currentLog['heatTemperature'],
-				'fanSwitch': currentLog['fanSwitch']	
-			}
-		}
+		timeLastRead = currentLog['unixTime'],
+		roomTemperature = currentLog['roomTemperature'],
+		humidity = currentLog['humidity'],
+		coolSwitch = currentLog['coolSwitch'],
+		coolTemperature = currentLog['coolTemperature'],
+		heatSwitch = currentLog['heatSwitch'],
+		heatTemperature = currentLog['heatTemperature'],
+		fanSwitch = currentLog['fanSwitch']
 	)
 
 if __name__=='__main__':

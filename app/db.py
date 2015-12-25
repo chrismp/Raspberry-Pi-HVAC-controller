@@ -23,10 +23,7 @@ def makeDB():
 	)
 	conn.commit()
 
-
 def addStatus(status):
-	print(status)
-
 	conn = mdb.connect(host, user, pw, db)
 	c = conn.cursor()
 	c.execute(
@@ -52,7 +49,7 @@ def addStatus(status):
 				%s
 			)
 		''',
-		status,
+		status
 	)
 	conn.commit()
 
@@ -80,4 +77,3 @@ try:
 except mdb.Error as e:
 	print("Error %d: %s" % (e.args[0],e.args[1]))
 	sys.exit(1)
-
