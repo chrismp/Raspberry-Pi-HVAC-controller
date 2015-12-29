@@ -5,11 +5,24 @@ import datetime
 import time
 import json
 import os
-import RPi.GPIO as GPIO
 import dotenv
+import RPi.GPIO as GPIO
+import Adafruit_DHT
 
 
 def currentTemperatureRaw():
+	# Sensor should be set to Adafruit_DHT.DHT11, Adafruit_DHT.DHT22, or Adafruit_DHT.AM2302.
+	sensor = Adafruit_DHT.DHT22
+	pin = os.environ.get('DHT22_PIN')
+
+    # Try to grab a sensor reading.  
+    # Use the read_retry method which will retry up to 15 times to get a sensor reading (waiting 2 seconds between each retry).
+    humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
+    rawReading = {
+    	'humidity': humidity,
+    	'temperature': temperature
+    }
+    print rawReading
 	return random.uniform(60.0, 90.0)
 
 def currentTemperatureRound(temperatureRaw):
@@ -131,6 +144,18 @@ if __name__=='__main__':
 		'.env'
 	)
 	dotenv.load_dotenv(dotenvPath)
+
+
+
+	# Pin Definitons:
+	coolPin = os.environ.get('COOL_PIN')
+	heatPin = os.environ.get('HEAT_PIN')
+	fanPin = os.environ.get('FAN_PIN')
+	hvacPinArray = [
+	    coolPin,
+	    heatPin,
+	    fanPin
+	]
 
 	# Get current status
 	baseURL = os.environ.get('BASE_URL')
