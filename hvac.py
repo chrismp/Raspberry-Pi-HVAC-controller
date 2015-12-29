@@ -5,8 +5,8 @@ import datetime
 import time
 import json
 import os
-# import RPi.GPIO as io
-from dotenv import load_dotenv
+import RPi.GPIO as GPIO
+import dotenv
 
 
 def currentTemperatureRaw():
@@ -130,7 +130,7 @@ if __name__=='__main__':
 		os.path.dirname(__file__),
 		'.env'
 	)
-	load_dotenv(dotenvPath)
+	dotenv.load_dotenv(dotenvPath)
 
 	# Get current status
 	baseURL = os.environ.get('BASE_URL')
