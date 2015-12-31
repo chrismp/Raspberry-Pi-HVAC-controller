@@ -29,7 +29,7 @@ def currentTemperatureRaw():
         return rawReading['temperature']
 
 def convertToC(tempF):
-        return ((tempF - 32) / 9) * 5  # Convert Fahrenheit to Celsius
+        return ((tempF - 32.0) / 9.0) * 5.0  # Convert Fahrenheit to Celsius. Remember to add '.0' after numbers to make them floats. We want this to be a float.
 
 def currentHumidityRaw():
         rawReading = dht22Reading()
@@ -48,7 +48,6 @@ def sendCurrentStatus():
                 'heatTemperature': currentStatus['heatTemperature'],
                 'fanSwitch': currentStatus['fanSwitch']
         }
-        print dataToSend # For debugging
         
         url = baseURL+'/add-hvac-status'
         headers = {
@@ -74,24 +73,23 @@ def sendCurrentStatus():
 
 def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
         # For testing/debugging only!
-        coolSwitch = 1
-        coolTemperature = convertToC(75)
-        heatSwitch = 0
-        heatTemperature = convertToC(70)
-        fanSwitch = 1
-        print coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch 
+##        coolSwitch = 0
+##        coolTemperature = convertToC(85)
+##        heatSwitch = 1
+##        heatTemperature = convertToC(80)
+##        fanSwitch = 1
 
         # May need to replace next four lines with some other code for getting and evaluating min/max temperature settings
         # Maybe get min/max settings from user/frontend?
-        minTemp = int( os.environ.get('MINIMUM_TEMPERATURE') )
-        maxTemp = int( os.environ.get('MAXIMUM_TEMPERATURE') )
+        minTemp = float( os.environ.get('MINIMUM_TEMPERATURE') )
+        maxTemp = float( os.environ.get('MAXIMUM_TEMPERATURE') )
         minTemp = convertToC(minTemp)
         maxTemp = convertToC(maxTemp)
 
         # Example of how `tempBuffer` is used: If COOL is set to 23.889C (about 75F), it will not turn on if tempF is 23.89, but only when it reaches 24.444 (about 76F)
-        tempBuffer = 0.555 # One degree change in Fahrenheit is about 0.555 in Celsius
-
+        tempBuffer = float( os.environ.get('TEMPERATURE_BUFFER') )
         roomTemperature = currentTemperatureRaw()
+        print roomTemperature  # debugging
 
         if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False:
                 coolTemperature = None
@@ -109,7 +107,7 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
                                 coolSwitch = 1
                                 heatSwitch = 0
 
-                        if roomTemperature > int(coolTemperature)+tempBuffer:
+                        if roomTemperature > float(coolTemperature)+tempBuffer:
                                 coolSwitch = 1
                                 print 'Room temperature too high. Cooling...'
                         else:
@@ -129,7 +127,7 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
                                 coolSwitch = 0
                                 heatSwitch = 1
 
-                        if roomTemperature < int(heatTemperature)-tempBuffer:
+                        if roomTemperature < float(heatTemperature)-tempBuffer:
                                 heatSwitch = 1
                                 print 'Room temp too cold. Heating...'
                         else:
@@ -140,10 +138,10 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
                 print 'heat switched off'
 
 
-        if fanSwitch==1:
+        if fanSwitch==0:
                 GPIO.output(fanPin, GPIO.HIGH)
                 print 'fan switched on'
-        else:
+        elif fanSwitch==1:
                 GPIO.output(fanPin, GPIO.LOW)
                 fanSwitch = 0
                 print 'fan switched off'
