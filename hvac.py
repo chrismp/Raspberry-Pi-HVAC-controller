@@ -87,9 +87,9 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
         maxTemp = convertToC(maxTemp)
 
         # Example of how `tempBuffer` is used: If COOL is set to 23.889C (about 75F), it will not turn on if tempF is 23.89, but only when it reaches 24.444 (about 76F)
-        tempBuffer = float( os.environ.get('TEMPERATURE_BUFFER') )
+        tempBuffer = float( os.environ.get('TEMPERATURE_BUFFER') ) # One degree change in Fahrenheit is about 0.555 in Celsius. So if I want the temperature buffer to be one degree Fahrenheit, set this to 0.555 Celsius.
         roomTemperature = currentTemperatureRaw()
-        print roomTemperature  # debugging
+        # print roomTemperature  # debugging
 
         if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False:
                 coolTemperature = None
