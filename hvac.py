@@ -48,7 +48,7 @@ def sendCurrentStatus():
                 'heatTemperature': currentStatus['heatTemperature'],
                 'fanSwitch': currentStatus['fanSwitch']
         }
-        
+        print dataToSend
         url = baseURL+'/add-hvac-status'
         headers = {
                 'Content-type': 'application/json',
@@ -68,7 +68,7 @@ def sendCurrentStatus():
         heatSwitch = rJSON['heatSwitch']
         heatTemperature = rJSON['heatTemperature']
         fanSwitch = rJSON['fanSwitch']
-        
+        print rJSON
         setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
 
 def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
@@ -205,6 +205,7 @@ if __name__=='__main__':
         )
 
         startupStatus = statusURLResponse.json()
+        print startupStatus # for debugging
         startupStatusDictionary = startupStatus['Status']
         
         if startupStatusDictionary==None:
@@ -223,6 +224,8 @@ if __name__=='__main__':
                         'heatTemperature': startupStatusDictionary['heatTemperature'],
                         'fanSwitch': startupStatusDictionary['fanSwitch']
                 }
+
+        print currentStatus # for debugging
 
         try:
                 while True:
