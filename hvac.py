@@ -83,8 +83,6 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
         # Maybe get min/max settings from user/frontend?
         minTemp = float( os.environ.get('MINIMUM_TEMPERATURE') )
         maxTemp = float( os.environ.get('MAXIMUM_TEMPERATURE') )
-        minTemp = convertToC(minTemp)
-        maxTemp = convertToC(maxTemp)
 
         # Example of how `tempBuffer` is used: If COOL is set to 23.889C (about 75F), it will not turn on if tempF is 23.89, but only when it reaches 24.444 (about 76F)
         tempBuffer = float( os.environ.get('TEMPERATURE_BUFFER') ) # One degree change in Fahrenheit is about 0.555 in Celsius. So if I want the temperature buffer to be one degree Fahrenheit, set this to 0.555 Celsius.
@@ -140,11 +138,10 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 
         if fanSwitch==0:
                 GPIO.output(fanPin, GPIO.HIGH)
-                print 'fan switched on'
+                print 'fan switched off'
         elif fanSwitch==1:
                 GPIO.output(fanPin, GPIO.LOW)
-                fanSwitch = 0
-                print 'fan switched off'
+                print 'fan switched on'
 
         if coolSwitch==0:
                 GPIO.output(coolPin, GPIO.HIGH)
