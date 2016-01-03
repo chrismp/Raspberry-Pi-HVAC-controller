@@ -68,6 +68,7 @@ def sendCurrentStatus():
     
     setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
 
+
 def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
     # For testing/debugging only!
 ##        coolSwitch = 0
@@ -75,6 +76,7 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 ##        heatSwitch = 1
 ##        heatTemperature = convertToC(80)
 ##        fanSwitch = 1
+
 
     # May need to replace next four lines with some other code for getting and evaluating min/max temperature settings
     # Maybe get min/max settings from user/frontend?
