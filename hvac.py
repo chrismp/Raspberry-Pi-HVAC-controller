@@ -139,11 +139,10 @@ def setStatus(coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitc
 
     if fanSwitch==0:
         GPIO.output(fanPin, GPIO.HIGH)
-        print 'fan switched on'
+        print 'fan switched off'
     elif fanSwitch==1:
         GPIO.output(fanPin, GPIO.LOW)
-        fanSwitch = 0
-        print 'fan switched off'
+        print 'fan switched on'
 
     if coolSwitch==0:
         GPIO.output(coolPin, GPIO.HIGH)
