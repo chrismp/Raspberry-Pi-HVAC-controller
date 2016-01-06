@@ -47,36 +47,6 @@ def sendCurrentStatus():
 		'heatTemperature': currentStatus['heatTemperature'],
 		'fanSwitch': currentStatus['fanSwitch']
 	}
-	print dataToSend
-	
-	url = baseURL+'/add-hvac-status'
-	headers = {
-		'Content-type': 'application/json',
-		'Accept': 'text/plain'
-	}
-
-	r = requests.post(
-		url,
-		data = json.dumps(dataToSend),
-		headers = headers,
-		timeout = int( os.environ.get('ADD_HVAC_STATUS_REQUEST_TIMEOUT') )
-	)
-	rJSON = r.json() # Desired status, as returned by '/add-hvac-status' route
-
-	roomTemperature = currentStatus['roomTemperature']
-	coolSwitch = rJSON['coolSwitch']
-	# coolStatus = rJSON['coolStatus']
-	coolTemperature = rJSON['coolTemperature']
-	heatSwitch = rJSON['heatSwitch']
-	# heatStatus = rJSON['heatStatus']
-	heatTemperature = rJSON['heatTemperature']
-	fanSwitch = rJSON['fanSwitch']
-	setStatus(roomTemperature, coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch)
-
-
-def setStatus(roomTemperature, coolSwitch, coolTemperature, heatSwitch, heatTemperature, fanSwitch):
-	coolStatus = 0
-	heatStatus = 0
 
 	# May need to replace next few lines with some other code for getting and evaluating min/max temperature settings
 	# Maybe get min/max settings from user/frontend?
@@ -152,6 +122,30 @@ def setStatus(roomTemperature, coolSwitch, coolTemperature, heatSwitch, heatTemp
 	#	 GPIO.output(heatPin, GPIO.HIGH)
 	# elif heatSwitch==1:
 	#	 GPIO.output(heatPin, GPIO.LOW)				
+
+	url = baseURL+'/add-hvac-status'
+	headers = {
+		'Content-type': 'application/json',
+		'Accept': 'text/plain'
+	}
+
+	r = requests.post(
+		url,
+		data = json.dumps(dataToSend),
+		headers = headers,
+		timeout = int( os.environ.get('ADD_HVAC_STATUS_REQUEST_TIMEOUT') )
+	)
+	rJSON = r.json() # Desired status, as returned by '/add-hvac-status' route
+
+	roomTemperature = currentStatus['roomTemperature']
+	coolSwitch = rJSON['coolSwitch']
+	coolTemperature = rJSON['coolTemperature']
+	heatSwitch = rJSON['heatSwitch']
+	heatTemperature = rJSON['heatTemperature']
+	fanSwitch = rJSON['fanSwitch']
+
+	coolStatus = 0
+	heatStatus = 0
 
 	currentStatus['roomTemperature'] = currentTemperatureRaw()
 	currentStatus['humidity'] = currentHumidityRaw()
