@@ -33,21 +33,22 @@ def currentTemperatureRaw():
 def currentHumidityRaw():
 	return random.uniform(0.0, 100.0)
 
-def sendCurrentStatus():
-	dataToSend = {
-		'roomTemperature': currentStatus['roomTemperature'],
-		'humidity': currentStatus['humidity'],
-		# 'roomTemperature': currentTemperatureRaw(),
-		# 'humidity': currentHumidityRaw(),
-		'coolSwitch': currentStatus['coolSwitch'],
-		'coolStatus': currentStatus['coolStatus'],
-		'coolTemperature': currentStatus['coolTemperature'],
-		'heatSwitch': currentStatus['heatSwitch'],
-		'heatStatus': currentStatus['heatStatus'],
-		'heatTemperature': currentStatus['heatTemperature'],
-		'fanSwitch': currentStatus['fanSwitch']
-	}
+def setHVACAndSendStatus():
+	print currentStatus
 
+	coolSwitch = currentStatus['coolSwitch']
+	coolTemperature = currentStatus['coolTemperature']
+	heatSwitch = currentStatus['heatSwitch']
+	heatTemperature = currentStatus['heatTemperature']
+	fanSwitch = currentStatus['fanSwitch']
+
+	coolStatus = 0
+	heatStatus = 0
+
+	roomTemperature = currentTemperatureRaw()
+	humidity = currentHumidityRaw()
+
+# def setHVAC(roomTemperature, coolTemperature, heatTemperature):
 	# May need to replace next few lines with some other code for getting and evaluating min/max temperature settings
 	# Maybe get min/max settings from user/frontend?
 	minTemp = float( os.environ.get('MINIMUM_TEMPERATURE') )
@@ -123,6 +124,9 @@ def sendCurrentStatus():
 	# elif heatSwitch==1:
 	#	 GPIO.output(heatPin, GPIO.LOW)				
 
+	currentStatus['coolStatus'] = coolStatus
+	currentStatus['heatStatus'] = heatStatus
+
 	url = baseURL+'/add-hvac-status'
 	headers = {
 		'Content-type': 'application/json',
@@ -131,33 +135,23 @@ def sendCurrentStatus():
 
 	r = requests.post(
 		url,
-		data = json.dumps(dataToSend),
+		data = json.dumps(currentStatus),
 		headers = headers,
 		timeout = int( os.environ.get('ADD_HVAC_STATUS_REQUEST_TIMEOUT') )
 	)
 	rJSON = r.json() # Desired status, as returned by '/add-hvac-status' route
 
-	roomTemperature = currentStatus['roomTemperature']
-	coolSwitch = rJSON['coolSwitch']
-	coolTemperature = rJSON['coolTemperature']
-	heatSwitch = rJSON['heatSwitch']
-	heatTemperature = rJSON['heatTemperature']
-	fanSwitch = rJSON['fanSwitch']
 
-	coolStatus = 0
-	heatStatus = 0
-
-	currentStatus['roomTemperature'] = currentTemperatureRaw()
-	currentStatus['humidity'] = currentHumidityRaw()
-	currentStatus['coolSwitch'] = coolSwitch
-	currentStatus['coolStatus'] = coolStatus
-	currentStatus['coolTemperature'] = coolTemperature
-	currentStatus['heatSwitch'] = heatSwitch
-	currentStatus['heatStatus'] = heatStatus
-	currentStatus['heatTemperature'] = heatTemperature
-	currentStatus['fanSwitch'] = fanSwitch
+	currentStatus['roomTemperature'] = roomTemperature
+	currentStatus['humidity'] = humidity
+	currentStatus['coolSwitch'] = rJSON['coolSwitch']
+	currentStatus['coolTemperature'] = rJSON['coolTemperature']
+	currentStatus['heatSwitch'] = rJSON['heatSwitch']
+	currentStatus['heatTemperature'] = rJSON['heatTemperature']
+	currentStatus['fanSwitch'] = rJSON['fanSwitch']
 	print currentStatus # for debugging
 	print '================'
+
 
 def inTemperatureRange(minTemp, maxTemp, temperature):
 	if temperature==None or temperature=='':
@@ -233,7 +227,7 @@ if __name__=='__main__':
 	try:
 		while True:
 			preConnect = datetime.datetime.now()
-			sendCurrentStatus()
+			setHVACAndSendStatus()
 			lastConnect = datetime.datetime.now()
 			time.sleep( int(os.environ.get('SECONDS_BETWEEN_HVAC_READINGS')) )
 	except Exception as e:
