@@ -18,8 +18,8 @@ import dotenv
 #	 # Use the read_retry method which will retry up to 15 times to get a sensor reading (waiting 2 seconds between each retry).
 #	 humidity, temperature = Adafruit_DHT.read_retry(sensor, pin)
 #	 rawReading = {
-#		 'humidity': humidity,
-#		 'temperature': temperature  # Raw temperature reading is in Celsius
+#		'humidity': humidity,
+#		'temperature': temperature  # Raw temperature reading is in Celsius
 #	 }
 
 #	 return rawReading
@@ -108,21 +108,25 @@ def setHVACAndSendStatus():
 
 
 	# if fanSwitch==0:
-	#	 GPIO.output(fanPin, GPIO.HIGH)
-	#	 print 'fan switched off'
+	# 	GPIO.output(fanPin, GPIO.HIGH)
+	# 	print 'fan switched off'
 	# elif fanSwitch==1:
-	#	 GPIO.output(fanPin, GPIO.LOW)
-	#	 print 'fan switched on'
+	# 	GPIO.output(fanPin, GPIO.LOW)
+	# 	print 'fan switched on'
 
 	# if coolSwitch==0:
-	#	 GPIO.output(coolPin, GPIO.HIGH)
+	# 	GPIO.output(coolPin, GPIO.HIGH)
 	# elif coolSwitch==1:
-	#	 GPIO.output(coolPin, GPIO.LOW)
+	# 	GPIO.output(heatPin, GPIO.HIGH) # Turn off heat
+	# 	time.sleep(10)
+	# 	GPIO.output(coolPin, GPIO.LOW) # Turn on cool
 			
 	# if heatSwitch==0:
-	#	 GPIO.output(heatPin, GPIO.HIGH)
+	# 	GPIO.output(heatPin, GPIO.HIGH)
 	# elif heatSwitch==1:
-	#	 GPIO.output(heatPin, GPIO.LOW)				
+	# 	GPIO.output(coolPin, GPIO.HIGH) # Turn off cool
+	# 	time.sleep(10)
+	# 	GPIO.output(heatPin, GPIO.LOW) # Turn on heat
 
 	currentStatus['coolStatus'] = coolStatus
 	currentStatus['heatStatus'] = heatStatus
