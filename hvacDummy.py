@@ -34,7 +34,7 @@ def currentHumidityRaw():
 	return random.uniform(0.0, 100.0)
 
 def setHVACAndSendStatus():
-	print currentStatus
+	print(currentStatus)
 
 	coolSwitch = currentStatus['coolSwitch']
 	coolTemperature = currentStatus['coolTemperature']
@@ -58,7 +58,7 @@ def setHVACAndSendStatus():
 	# If COOL is set to 23.889C (about 75F), it will not turn on if tempF is 23.89...
 	# ...but only when it reaches 24.444 (about 76F)
 	tempBuffer = float( os.environ.get('TEMPERATURE_BUFFER') ) # One degree change in Fahrenheit is about 0.555 in Celsius. So if I want the temperature buffer to be one degree Fahrenheit, set this to 0.555 Celsius.
-	print roomTemperature+tempBuffer
+	print(roomTemperature+tempBuffer)
 
 	if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False:
 		coolTemperature = None
@@ -68,7 +68,7 @@ def setHVACAndSendStatus():
 
 	if coolSwitch==1:
 		if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False:
-			print 'Cool temperature out of range'
+			print('Cool temperature out of range')
 			coolSwitch = 0
 			coolTemperature = None
 		else:
@@ -78,17 +78,17 @@ def setHVACAndSendStatus():
 
 			if roomTemperature > float(coolTemperature)+tempBuffer:
 				coolStatus = 1
-				print 'Room temperature too high. Cooling...'
+				print('Room temperature too high. Cooling...')
 			else:
 				coolStatus = 0
-				print 'Room temp cool, turning off cool.'
+				print('Room temp cool, turning off cool.')
 	else:
 		coolSwitch = 0
-		print 'cool switched off'
+		print('cool switched off')
 
 	if heatSwitch==1:
 		if inTemperatureRange(minTemp, maxTemp, heatTemperature)==False:
-			print 'Heat temp out of range'
+			print('Heat temp out of range')
 			heatSwitch = 0
 			heatTemperature = None
 		else:
@@ -98,21 +98,21 @@ def setHVACAndSendStatus():
 
 			if roomTemperature < float(heatTemperature)-tempBuffer:
 				heatStatus = 1
-				print 'Room temp too cold. Heating...'
+				print('Room temp too cold. Heating...')
 			else:
 				heatStatus = 0
-				print 'Room temp warm. Turning off heat.'
+				print('Room temp warm. Turning off heat.')
 	else:
 		heatSwitch = 0
-		print 'heat switched off'
+		print('heat switched off')
 
 
 	# if fanSwitch==0:
 	# 	GPIO.output(fanPin, GPIO.HIGH)
-	# 	print 'fan switched off'
+	# 	print('fan switched off'
 	# elif fanSwitch==1:
 	# 	GPIO.output(fanPin, GPIO.LOW)
-	# 	print 'fan switched on'
+	# 	print('fan switched on'
 
 	# if coolSwitch==0:
 	# 	GPIO.output(coolPin, GPIO.HIGH)
@@ -143,6 +143,8 @@ def setHVACAndSendStatus():
 		headers = headers,
 		timeout = int( os.environ.get('ADD_HVAC_STATUS_REQUEST_TIMEOUT') )
 	)
+	print(dir(r))
+	print(r.content)
 	rJSON = r.json() # Desired status, as returned by '/add-hvac-status' route
 
 
@@ -153,8 +155,8 @@ def setHVACAndSendStatus():
 	currentStatus['heatSwitch'] = rJSON['heatSwitch']
 	currentStatus['heatTemperature'] = rJSON['heatTemperature']
 	currentStatus['fanSwitch'] = rJSON['fanSwitch']
-	print currentStatus # for debugging
-	print '================'
+	print(currentStatus) # for debugging
+	print('================')
 
 
 def inTemperatureRange(minTemp, maxTemp, temperature):
