@@ -48,9 +48,6 @@ def setHVACAndSendStatus():
 	roomTemperature = currentTemperatureRaw()
 	humidity = currentHumidityRaw()
 
-# def setHVAC(roomTemperature, coolTemperature, heatTemperature):
-	# May need to replace next few lines with some other code for getting and evaluating min/max temperature settings
-	# Maybe get min/max settings from user/frontend?
 	minTemp = float( os.environ.get('MINIMUM_TEMPERATURE') )
 	maxTemp = float( os.environ.get('MAXIMUM_TEMPERATURE') )
 
