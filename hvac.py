@@ -10,7 +10,7 @@ import RPi.GPIO as GPIO
 import Adafruit_DHT
 
 def dht22Reading():
-        print("Reading temperature and humidity")
+##        print("Reading temperature and humidity")
         
         # Sensor should be set to Adafruit_DHT.DHT11, Adafruit_DHT.DHT22, or Adafruit_DHT.AM2302.
         sensor = Adafruit_DHT.DHT22
@@ -24,7 +24,7 @@ def dht22Reading():
                 'temperature': temperature  # Raw temperature reading is in Celsius
         }
 
-        print(rawReading)
+##        print(rawReading)
         return rawReading
 
 def currentHumidityRaw():
@@ -36,7 +36,7 @@ def currentTemperatureRaw():
 	return rawReading['temperature']
 
 def setHVACAndSendStatus():
-	print(currentStatus)
+	print('1',currentStatus)
 
 	coolSwitch = currentStatus['coolSwitch']
 	coolTemperature = currentStatus['coolTemperature']
@@ -57,9 +57,9 @@ def setHVACAndSendStatus():
 ##	If COOL is set to 23.889C (about 75F), it will not turn on if tempF is 23.89...
 ##	...but only when it reaches 24.444 (about 76F)
 	tempBuffer = float( os.environ.get('TEMPERATURE_BUFFER') ) # One degree change in Fahrenheit is about 0.555 in Celsius. So if I want the temperature buffer to be one degree Fahrenheit, set this to 0.555 Celsius.
-        print(tempBuffer)
-        print(roomTemperature)
-        print(humidity)
+##        print(tempBuffer)
+##        print(roomTemperature)
+##        print(humidity)
 
 	if inTemperatureRange(minTemp, maxTemp, coolTemperature)==False:
 		coolTemperature = None
@@ -154,7 +154,7 @@ def setHVACAndSendStatus():
 	currentStatus['heatSwitch'] = rJSON['heatSwitch']
 	currentStatus['heatTemperature'] = rJSON['heatTemperature']
 	currentStatus['fanSwitch'] = rJSON['fanSwitch']
-	print(currentStatus) # for debugging
+	print('2',currentStatus) # for debugging
 	print('================')
 
 
@@ -234,7 +234,7 @@ if __name__=='__main__':
 			preConnect = datetime.datetime.now()
 			setHVACAndSendStatus()
 			lastConnect = datetime.datetime.now()
-##			time.sleep( int(os.environ.get('SECONDS_BETWEEN_HVAC_READINGS')) )
+			time.sleep( int(os.environ.get('SECONDS_BETWEEN_HVAC_READINGS')) )
 	except (Exception, KeyboardInterrupt) as e:
 		GPIO.cleanup() # cleanup all GPIO, which will turn off everything attached to GPIO pins
 		raise
