@@ -1,4 +1,4 @@
-Adafruit_DHT.egg-info/*
+Adafruit_DHT/*
 __pycache__/*
 *__pycache__*
 venv/*
